@@ -1,7 +1,7 @@
-package repository;
+package randomecommerce.randomecommerce.repository;
 
 
-import domain.Producto;
+import randomecommerce.randomecommerce.domain.Producto;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 

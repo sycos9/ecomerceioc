@@ -2,11 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package service;
+package randomecommerce.randomecommerce.service;
 
-import domain.Producto;
+import randomecommerce.randomecommerce.domain.Producto;
 import java.util.List;
-import repository.ProductoRepository;
+import randomecommerce.randomecommerce.repository.ProductoRepository;
 import org.springframework.stereotype.Service;
 
 /**

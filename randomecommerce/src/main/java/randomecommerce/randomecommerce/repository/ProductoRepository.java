@@ -3,6 +3,7 @@ package randomecommerce.randomecommerce.repository;
 
 import randomecommerce.randomecommerce.domain.Producto;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -19,4 +20,7 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
 
     // --- Filtrar por rango de precios ---
     List<Producto> findByPrecioBetween(double min, double max);
+    
+    Optional<Producto> findByCodigo(String codigo);
+
 }

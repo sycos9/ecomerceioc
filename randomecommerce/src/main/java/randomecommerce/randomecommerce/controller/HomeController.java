@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomeController {
 
-    @GetMapping("/")
+    @GetMapping("/Random")
     public String mostrarInicio() {
         // Esto devolverá el archivo templates/index.html
         return "index";

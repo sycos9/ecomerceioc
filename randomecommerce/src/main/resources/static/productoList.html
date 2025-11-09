@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Productos - E-random-Comerç</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    />
+</head>
+<body>
+
+    <header class="navbar">
+      <div class="logo">E-random-Comerç</div>
+      <nav class="nav-links">
+        <a href="/Random">Inici</a>
+        <a href="#">Botiga</a>
+        <a href="#">Blog</a>
+      </nav>
+      <div class="nav-icons">
+        <input type="text" placeholder="Cercar..." class="search-bar" />
+        <button class="icon">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+        <button class="icon"><i class="fa-solid fa-cart-shopping"></i></button>
+        <button class="icon"><i class="fa-solid fa-user"></i></button>
+      </div>
+    </header>
+
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Lista de Productos</h2>
+            <!-- Botón para añadir producto -->
+            <a href="/Random/productos/nuevo" class="btn btn-primary">Añadir Producto</a>
+        </div>
+        <table class="table table-striped" id="tabla-productos">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Categoría</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    
+    <footer class="footer">
+        <div class="footer-links">
+            <div>
+              <h4>Sobre nosaltres</h4>
+              <a href="#">Blog</a>
+              <a href="#">Equip</a>
+            </div>
+            <div>
+              <h4>Ajuda</h4>
+              <a href="#">Contacte</a>
+              <a href="#">Enviaments</a>
+              <a href="#">Retorns</a>
+            </div>
+        </div>
+      <p class="copyright">© 2025 E-random-Comerç. Tots els drets reservats.</p>
+    </footer>
+    
+    <script>
+        // Cargar productos desde backend
+        fetch('/productos/data')
+            .then(res => res.json())
+            .then(data => {
+                const tbody = document.querySelector('#tabla-productos tbody');
+                if (data.length === 0) {
+                        // Mostrar fila indicando que no hay productos
+                        tbody.innerHTML = '<tr><td colspan="5" class="text-center">No hay productos registrados</td></tr>';
+                    } else {
+                        data.forEach(producto => {
+                            const row = document.createElement('tr');
+                            row.innerHTML =`
+                                <td>${producto.codigo}</td>    
+                                <td>${producto.nombre}</td>
+                                <td>${producto.descripcion}</td>
+                                <td>${producto.precio}</td>
+                                <td>${producto.stock}</td>
+                                <td>${producto.categoria}</td>
+                            `;
+                            tbody.appendChild(row);
+                        });
+                    }
+
+                    // Mostrar cantidad total de productos
+                    document.getElementById('total-productos').textContent = 
+                        `Total de productos: ${data.length}`;
+            })
+            .catch(err => console.error('Error cargando productos:', err));
+    </script>
+
+
+</body>
+</html>

@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Productos - E-random-Comerç</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/style.css}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    />
+</head>
+<body>
+
+    <header class="navbar">
+      <div class="logo">E-random-Comerç</div>
+      <nav class="nav-links">
+        <a th:href="@{/Random}">Inici</a>
+        <a href="#">Botiga</a>
+        <a href="#">Blog</a>
+      </nav>
+      <div class="nav-icons">
+        <input type="text" placeholder="Cercar..." class="search-bar" />
+        <button class="icon">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+        <button class="icon"><i class="fa-solid fa-cart-shopping"></i></button>
+        <button class="icon"><i class="fa-solid fa-user"></i></button>
+      </div>
+    </header>
+
+    <div class="container mt-5">
+        <!-- Mensaje de éxito -->
+        <div th:if="${mensaje}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-circle-check"></i>
+            <span th:text="${mensaje}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Lista de Productos</h2>
+            <!-- Botón para añadir producto -->
+            <a th:href="@{/Random/productos/nuevo}" class="btn btn-primary">
+                <i class="fa-solid fa-plus"></i> Añadir Producto
+            </a>
+        </div>
+
+        <!-- Mostrar total de productos -->
+        <p th:if="${productos != null and !productos.isEmpty()}" class="text-muted">
+            Total de productos: <strong th:text="${productos.size()}">0</strong>
+        </p>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Categoría</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Si hay productos, los muestra -->
+                <tr th:each="producto : ${productos}">
+                    <td th:text="${producto.codigo}">P001</td>
+                    <td th:text="${producto.nombre}">Producto</td>
+                    <td th:text="${producto.descripcion}">Descripción</td>
+                    <td th:text="${'€' + #numbers.formatDecimal(producto.precio, 1, 2)}">€10.00</td>
+                    <td th:text="${producto.stock}">100</td>
+                    <td th:text="${producto.categoria}">Categoría</td>
+                    <td>
+                        <a th:href="@{/Random/productos/editar/{id}(id=${producto.id})}" class="btn btn-warning btn-sm">
+                            <i class="fa-solid fa-edit"></i>
+                        </a>
+                        <a href="#" class="btn btn-danger btn-sm"
+                            th:data-id="${producto.id}" 
+                            th:data-nombre="${producto.nombre}" 
+                            onclick="eliminarProducto(this)">
+                            <i class="fa-solid fa-trash"></i>
+                         </a>
+
+                    </td>
+                </tr>
+
+                <!-- Si no hay productos -->
+                <tr th:if="${productos == null or productos.isEmpty()}">
+                    <td colspan="6" class="text-center text-muted py-4">
+                        <i class="fa-solid fa-box-open fa-3x mb-3"></i>
+                        <p>No hay productos registrados</p>
+                        <a th:href="@{/Random/productos/nuevo}" class="btn btn-sm btn-primary">
+                            Añadir primer producto
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <footer class="footer">
+        <div class="footer-links">
+            <div>
+              <h4>Sobre nosaltres</h4>
+              <a href="#">Blog</a>
+              <a href="#">Equip</a>
+            </div>
+            <div>
+              <h4>Ajuda</h4>
+              <a href="#">Contacte</a>
+              <a href="#">Enviaments</a>
+              <a href="#">Retorns</a>
+            </div>
+        </div>
+        <p class="copyright">© 2025 E-random-Comerç. Tots els drets reservats.</p>
+    </footer>
+
+    <!-- Bootstrap JS para cerrar alertas -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Confirmación Swal -->
+    <script>
+    function eliminarProducto(element) {
+        const id = element.dataset.id;
+        const nombre = element.dataset.nombre;
+
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "Deseas eliminar el producto: " + nombre,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/Random/productos/eliminar/' + id;
+            }
+        });
+    }
+
+    </script>
+
+</body>
+</html>

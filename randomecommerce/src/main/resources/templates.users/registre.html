@@ -22,9 +22,9 @@
     <header class="navbar">
       <div class="logo">E-random-Comerç</div>
       <nav class="nav-links">
-        <a href="#">Inici</a>
-        <a href="#">Botiga</a>
-        <a href="#">Blog</a>
+        <a th:href="@{/}">Inici</a>
+        <a th:href="@{/botiga}">Botiga</a>
+        <a th:href="@{/blog}">Blog</a>
       </nav>
       <div class="nav-icons">
         <input type="text" placeholder="Cercar..." class="search-bar" />
@@ -79,6 +79,10 @@
               required
             />
           </div>
+            
+          <!-- Mostra missatges del controlador -->
+          <p th:if="${error}" th:text="${error}" style="color: red; font-weight: bold;"></p>
+          <p th:if="${missatge}" th:text="${missatge}" style="color: green; font-weight: bold;"></p>
 
           <button type="submit" class="btn-register">Registrar-se</button>
 

@@ -15,7 +15,7 @@ public class UserController {
     // Formulari de registre
     @GetMapping("/registre")
     public String mostraFormulariRegistre() {
-        return "registre";
+        return "users/registre";
     }
 
     // Processa el registre
@@ -26,23 +26,23 @@ public class UserController {
                                  Model model) {
         if (!password.equals(confirmPassword)) {
             model.addAttribute("error", "Les contrasenyes no coincideixen!");
-            return "registre";
+            return "users/registre";
         }
 
         boolean creat = userService.registrarUsuari(username, password);
         if (!creat) {
             model.addAttribute("error", "Aquest usuari ja existeix!");
-            return "registre";
+            return "users/registre";
         }
 
         model.addAttribute("missatge", "Usuari registrat correctament!");
-        return "login"; // Redirigeix a login
+        return "users/login"; // Redirigeix a login
     }
 
     // Formulari de login
     @GetMapping("/login")
     public String mostraLogin() {
-        return "login";
+        return "users/login";
     }
 
     // Processa login
@@ -54,7 +54,7 @@ public class UserController {
 
         if (!valid) {
             model.addAttribute("error", "Usuari o contrasenya incorrectes!");
-            return "login";
+            return "users/login";
         }
 
         model.addAttribute("usuari", username);

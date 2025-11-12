@@ -58,6 +58,6 @@ public class UserController {
         }
 
         model.addAttribute("usuari", username);
-        return "index";
+        return "redirect:/Random";
     }
 }

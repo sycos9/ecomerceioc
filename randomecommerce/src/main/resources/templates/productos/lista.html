@@ -60,6 +60,7 @@
         <table class="table table-striped">
             <thead>
                 <tr>
+                    <th>Imagen</th>
                     <th>Código</th>
                     <th>Nombre</th>
                     <th>Descripción</th>
@@ -72,6 +73,17 @@
             <tbody>
                 <!-- Si hay productos, los muestra -->
                 <tr th:each="producto : ${productos}">
+                    <td>
+                        <img th:if="${producto.imagen != null and !producto.imagen.isEmpty()}" 
+                             th:src="@{/Random/imagenes/{nombre}(nombre=${producto.imagen})}" 
+                             alt="Imagen del producto" 
+                             class="img-thumbnail" 
+                             style="max-width: 80px; max-height: 80px; object-fit: cover;">
+                        <span th:if="${producto.imagen == null or producto.imagen.isEmpty()}" 
+                              class="text-muted">
+                            <i class="fa-solid fa-image"></i> Sin imagen
+                        </span>
+                    </td>
                     <td th:text="${producto.codigo}">P001</td>
                     <td th:text="${producto.nombre}">Producto</td>
                     <td th:text="${producto.descripcion}">Descripción</td>
@@ -94,7 +106,7 @@
 
                 <!-- Si no hay productos -->
                 <tr th:if="${productos == null or productos.isEmpty()}">
-                    <td colspan="6" class="text-center text-muted py-4">
+                    <td colspan="8" class="text-center text-muted py-4">
                         <i class="fa-solid fa-box-open fa-3x mb-3"></i>
                         <p>No hay productos registrados</p>
                         <a th:href="@{/Random/productos/nuevo}" class="btn btn-sm btn-primary">

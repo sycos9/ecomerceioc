@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="ca">
+<html lang="ca" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>E-random-Comerç | Botiga</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/style.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -21,15 +22,22 @@
     <header class="navbar">
       <div class="logo">E-random-Comerç</div>
       <nav class="nav-links">
-        <a href="#">Inici</a>
-        <a href="#">Botiga</a>
+        <a th:href="@{/Random}">Inici</a>
+        <a th:href="@{/Random/productos}">Productos</a>
         <a href="#">Blog</a>
       </nav>
       <div class="nav-icons">
-        <input type="text" placeholder="Cercar..." class="search-bar" />
-        <button class="icon">
-          <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
+        <form th:action="@{/Random}" method="get" class="d-flex align-items-center" style="gap: 5px;">
+          <input type="text" 
+                 name="busqueda" 
+                 placeholder="Cercar..." 
+                 class="search-bar" 
+                 th:value="${busqueda}" />
+          <input type="hidden" name="categoria" th:value="${categoriaSeleccionada}" />
+          <button type="submit" class="icon" style="border: none; background: none; cursor: pointer;">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </form>
         <a th:href="@{/carret}" class="icon">
             <i class="fa-solid fa-cart-shopping"></i>
         </a>
@@ -45,70 +53,91 @@
       <aside class="sidebar">
         <h3>Categories</h3>
         <ul>
-          <li><a href="#">Tots els productes</a></li>
-          <li><a href="#">Categoria 1</a></li>
-          <li><a href="#">Categoria 2</a></li>
-          <li><a href="#">Categoria 3</a></li>
-          <li><a href="#">Categoria 4</a></li>
+          <li>
+            <a th:href="@{/Random(busqueda=${busqueda})}" 
+               th:class="${categoriaSeleccionada == null} ? 'active' : ''">
+              Tots els productes
+            </a>
+          </li>
+          <li th:each="cat : ${categorias}">
+            <a th:href="@{/Random(categoria=${cat}, busqueda=${busqueda})}" 
+               th:text="${cat}"
+               th:class="${categoriaSeleccionada == cat} ? 'active' : ''">
+              Categoría
+            </a>
+          </li>
         </ul>
       </aside>
 
       <!-- Llista de productes -->
       <section class="product-section">
-        <h2 class="section-title">Productes destacats</h2>
+        <h2 class="section-title">
+          <span th:if="${busqueda != null and !busqueda.isEmpty()}">
+            Resultats de la cerca: "<span th:text="${busqueda}"></span>"
+            <span th:if="${categoriaSeleccionada != null}"> en <span th:text="${categoriaSeleccionada}"></span></span>
+          </span>
+          <span th:if="${busqueda == null or busqueda.isEmpty()}">
+            <span th:text="${categoriaSeleccionada != null} ? 'Productes: ' + ${categoriaSeleccionada} : 'Productes destacats'">Productes destacats</span>
+          </span>
+        </h2>
 
-        <div class="product-container">
-          <!-- Productes (6 per pàgina) -->
-          <div class="product-card">
-            <img src="" alt="Producte 1" />
-            <h4>Producte 1</h4>
-            <p class="price">29,90 €</p>
-            <button>Afegir al carro</button>
+        <div class="container mt-4">
+          <div class="row g-4">
+            <!-- Si hay productos, los muestra -->
+            <div th:each="producto : ${productos}" class="col-md-6">
+              <div class="card h-100 shadow-sm">
+                <!-- Imagen del producto (clicable) -->
+                <a th:href="@{/Random/productos/{id}(id=${producto.id}, categoria=${categoriaSeleccionada}, busqueda=${busqueda})}" style="text-decoration: none; color: inherit;">
+                  <div class="card-img-top-container" style="height: 300px; overflow: hidden; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                    <img th:if="${producto.imagen != null and !producto.imagen.isEmpty()}" 
+                         th:src="@{/Random/imagenes/{nombre}(nombre=${producto.imagen})}" 
+                         th:alt="${producto.nombre}" 
+                         class="card-img-top" 
+                         style="width: 100%; height: 100%; object-fit: cover;">
+                    <span th:if="${producto.imagen == null or producto.imagen.isEmpty()}" 
+                          class="text-muted">
+                      <i class="fa-solid fa-image fa-4x"></i>
+                    </span>
+                  </div>
+                </a>
+                
+                <div class="card-body d-flex flex-column">
+                  <!-- Código, Nombre y precio -->
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="d-flex align-items-center">
+                      <a th:href="@{/Random/productos/{id}(id=${producto.id}, categoria=${categoriaSeleccionada}, busqueda=${busqueda})}" style="text-decoration: none; color: inherit;">
+                        <span class="text-muted small me-2" th:text="${producto.codigo}">COD</span>
+                      </a>
+                      <a th:href="@{/Random/productos/{id}(id=${producto.id}, categoria=${categoriaSeleccionada}, busqueda=${busqueda})}" style="text-decoration: none; color: inherit;">
+                        <h5 class="card-title mb-0" th:text="${producto.nombre}">Nombre del producto</h5>
+                      </a>
+                    </div>
+                    <span class="text-primary fw-bold fs-5 ms-3" th:text="${'€' + #numbers.formatDecimal(producto.precio, 1, 2)}">€0.00</span>
+                  </div>
+                  
+                  <!-- Categoría -->
+                  <div class="mb-3">
+                    <span class="badge bg-secondary" th:text="${producto.categoria}">Categoría</span>
+                  </div>
+                  
+                  <!-- Botón añadir al carro -->
+                  <button class="btn btn-primary mt-auto" 
+                          th:data-producto-id="${producto.id}"
+                          onclick="añadirAlCarro(this.dataset.productoId)">
+                    <i class="fa-solid fa-cart-plus"></i> Añadir al carro
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Si no hay productos -->
+            <div th:if="${productos == null or productos.isEmpty()}" class="col-12">
+              <div class="text-center text-muted py-5">
+                <i class="fa-solid fa-box-open fa-3x mb-3"></i>
+                <p>No hay productos disponibles</p>
+              </div>
+            </div>
           </div>
-
-          <div class="product-card">
-            <img src="" alt="Producte 2" />
-            <h4>Producte 2</h4>
-            <p class="price">19,90 €</p>
-            <button>Afegir al carro</button>
-          </div>
-
-          <div class="product-card">
-            <img src="" alt="Producte 3" />
-            <h4>Producte 3</h4>
-            <p class="price">49,90 €</p>
-            <button>Afegir al carro</button>
-          </div>
-
-          <div class="product-card">
-            <img src="" alt="Producte 4" />
-            <h4>Producte 4</h4>
-            <p class="price">9,90 €</p>
-            <button>Afegir al carro</button>
-          </div>
-
-          <div class="product-card">
-            <img src="" alt="Producte 5" />
-            <h4>Producte 5</h4>
-            <p class="price">12,00 €</p>
-            <button>Afegir al carro</button>
-          </div>
-
-          <div class="product-card">
-            <img src="" alt="Producte 6" />
-            <h4>Producte 6</h4>
-            <p class="price">39,90 €</p>
-            <button>Afegir al carro</button>
-          </div>
-        </div>
-
-        <!-- Paginació -->
-        <div class="pagination">
-          <button class="page-btn prev">Anterior</button>
-          <span class="page-number active">1</span>
-          <span class="page-number">2</span>
-          <span class="page-number">3</span>
-          <button class="page-btn next">Següent</button>
         </div>
       </section>
     </main>
@@ -140,6 +169,17 @@
       </div>
       <p class="copyright">© 2025 E-random-Comerç. Tots els drets reservats.</p>
     </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Función para añadir al carro (placeholder) -->
+    <script>
+      function añadirAlCarro(productoId) {
+        // TODO: Implementar lógica del carro de compras
+        alert('Producto con ID ' + productoId + ' añadido al carro');
+      }
+    </script>
   </body>
 </html>
 

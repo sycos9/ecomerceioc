@@ -30,6 +30,9 @@ public class Producto {
     @Column(length = 50, nullable = false)
     private String categoria;
 
+    @Column(length = 255)
+    private String imagen;
+
 
     // --- Constructores ---
     public Producto() {}
@@ -99,6 +102,14 @@ public class Producto {
 
     public void setCategoria(String categoria) {
         this.categoria = categoria;
+    }
+
+    public String getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
     }
 
 }

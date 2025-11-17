@@ -55,7 +55,7 @@ public class ProductoController {
                 Files.createDirectories(uploadPath);
             }
         } catch (IOException e) {
-            throw new RuntimeException("No se pudo crear el directorio de imágenes", e);
+            throw new RuntimeException("No es pot crear el directori d'imatges", e);
         }
     }
     
@@ -75,7 +75,7 @@ public class ProductoController {
             @RequestParam(value = "busqueda", required = false) String busqueda,
             Model model) {
         Producto producto = productoService.buscarPorId(id)
-                .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Producte no trobat: " + id));
         model.addAttribute("producto", producto);
         // Pasar los parámetros de filtro para mantenerlos al volver
         if (busqueda != null && !busqueda.trim().isEmpty()) {
@@ -102,11 +102,11 @@ public class ProductoController {
             @RequestParam(value = "imagen", required = false) MultipartFile imagen,
             Model model) {
 
-        init(); // Asegurar que el directorio existe
+        init();
 
         // Validar que la categoría sea válida
         if (producto.getCategoria() == null || !productoService.esCategoriaValida(producto.getCategoria())) {
-            model.addAttribute("error", "La categoría seleccionada no es válida.");
+            model.addAttribute("error", "La categoria seleccionada no és vàlida.");
             model.addAttribute("producto", producto);
             model.addAttribute("categorias", productoService.obtenerCategorias());
             return "productos/formulario";
@@ -118,7 +118,7 @@ public class ProductoController {
         // Verificar si es duplicado de otro producto
         if (productoExistente.isPresent() &&
             (producto.getId() == null || !producto.getId().equals(productoExistente.get().getId()))) {
-            model.addAttribute("errorCodigo", "El código ya existe. Por favor, usa otro código.");
+            model.addAttribute("errorCodigo", "El codi ja existeix. Utilitza un altre codi.");
             model.addAttribute("producto", producto); // Mantener datos introducidos
             model.addAttribute("categorias", productoService.obtenerCategorias());
             return "productos/formulario"; // Volver a la misma vista
@@ -155,7 +155,7 @@ public class ProductoController {
                 // Guardar el nombre del archivo en el producto
                 producto.setImagen(nombreArchivo);
             } catch (IOException e) {
-                model.addAttribute("error", "Error al subir la imagen: " + e.getMessage());
+                model.addAttribute("error", "Error al pujar la imatge: " + e.getMessage());
                 model.addAttribute("producto", producto);
                 model.addAttribute("categorias", productoService.obtenerCategorias());
                 return "productos/formulario";
@@ -172,9 +172,9 @@ public class ProductoController {
 
         // Guardar producto (creación o edición)
         productoRepository.save(producto);
-        model.addAttribute("mensaje", "Producto guardado exitosamente");
+        model.addAttribute("mensaje", "Producte guardat exitosament");
 
-        return "redirect:/Random/productos";
+        return "redirect:/Random/productos"; //
     }
 
 
@@ -182,7 +182,7 @@ public class ProductoController {
     @GetMapping("/productos/editar/{id}")
     public String editarProducto(@PathVariable Long id, Model model) {
         Producto producto = productoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Producte no trobat: " + id));
         model.addAttribute("producto", producto);
         model.addAttribute("categorias", productoService.obtenerCategorias());
         return "productos/formulario"; // reutilizamos el formulario
@@ -192,7 +192,7 @@ public class ProductoController {
     @GetMapping("/productos/eliminar/{id}")
     public String eliminarProducto(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         Producto producto = productoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Producte no trobat: " + id));
 
         // Eliminar la imagen asociada si existe
         if (producto.getImagen() != null && !producto.getImagen().isEmpty()) {
@@ -205,7 +205,7 @@ public class ProductoController {
         }
 
         productoRepository.delete(producto);
-        redirectAttributes.addFlashAttribute("mensaje", "Producto eliminado exitosamente");
+        redirectAttributes.addFlashAttribute("mensaje", "Producte eliminat exitosament");
         return "redirect:/Random/productos";
     }
     

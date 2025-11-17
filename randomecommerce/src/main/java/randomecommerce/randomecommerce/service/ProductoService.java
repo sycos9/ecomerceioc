@@ -24,15 +24,15 @@ public class ProductoService {
     // Lista fija de categorías disponibles
     public static final List<String> CATEGORIAS = List.of(
         "Electrónica",
-        "Ropa",
-        "Hogar",
-        "Deportes",
-        "Libros",
-        "Juguetes",
-        "Alimentación",
-        "Belleza",
+        "Roba",
+        "Llar",
+        "Esports",
+        "Llibres",
+        "Joguines",
+        "Alimentació",
+        "Cosmètica",
         "Música",
-        "Otros"
+        "Altres"
     );
 
     public ProductoService(ProductoRepository productoRepository) {

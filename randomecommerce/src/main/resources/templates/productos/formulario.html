@@ -2,7 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Nuevo Producto</title>
+    <title>Nou Producte</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/style.css}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -35,7 +35,7 @@
     </header>
 
     <div class="container mt-5">
-        <h2>Crear Producto</h2>
+        <h2>Crear Producte</h2>
 
         <!-- Mensaje de error -->
         <div th:if="${error}" class="alert alert-danger" role="alert">
@@ -47,24 +47,24 @@
             <input type="hidden" th:field="*{id}" />
 
             <div class="mb-3">
-                <label for="codigo" class="form-label">Código</label>
+                <label for="codigo" class="form-label">Codi</label>
                 <input type="text" class="form-control" id="codigo" th:field="*{codigo}" required>
                 <!-- Mensaje de error específico -->
                 <div th:if="${errorCodigo}" class="text-danger mt-1" th:text="${errorCodigo}"></div>
             </div>
 
             <div class="mb-3">
-                <label for="nombre" class="form-label">Nombre</label>
+                <label for="nombre" class="form-label">Nom</label>
                 <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required>
             </div>
 
             <div class="mb-3">
-                <label for="descripcion" class="form-label">Descripción</label>
+                <label for="descripcion" class="form-label">Descripció</label>
                 <textarea id="descripcion" th:field="*{descripcion}" class="form-control"></textarea>
             </div>
 
             <div class="mb-3">
-                <label for="precio" class="form-label">Precio</label>
+                <label for="precio" class="form-label">Preu</label>
                 <input type="number" id="precio" th:field="*{precio}" step="0.01" class="form-control" required>
             </div>
 
@@ -74,32 +74,31 @@
             </div>
 
             <div class="mb-3">
-                <label for="categoria" class="form-label">Categoría</label>
+                <label for="categoria" class="form-label">Categoria</label>
                 <select id="categoria" th:field="*{categoria}" class="form-select" required>
-                    <option value="">Seleccione una categoría</option>
+                    <option value="">Selecciona una categoria</option>
                     <option th:each="cat : ${categorias}" 
                             th:value="${cat}" 
                             th:text="${cat}"
                             th:selected="${producto.categoria == cat}">
-                        Categoría
+                        Categoria
                     </option>
                 </select>
             </div>
 
             <div class="mb-3">
-                <label for="imagen" class="form-label">Imagen del Producto</label>
+                <label for="imagen" class="form-label">Imatge del Producte</label>
                 <input type="file" id="imagen" name="imagen" class="form-control" accept="image/*">
-                <small class="form-text text-muted">Formatos permitidos: JPG, PNG, GIF, WEBP</small>
-                <!-- Mostrar imagen actual si existe (para edición) -->
+                <small class="form-text text-muted">Formats permesos: JPG, PNG, GIF, WEBP</small>
                 <div th:if="${producto.imagen != null and !producto.imagen.isEmpty()}" class="mt-2">
-                    <p class="text-muted">Imagen actual:</p>
+                    <p class="text-muted">Imatge actual:</p>
                     <img th:src="@{'/imagenes/' + ${producto.imagen}}" alt="Imagen del producto" 
                          class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
                 </div>
             </div>
 
             <div class="mb-3">
-                <button type="submit" class="btn btn-success">Guardar Producto</button>
+                <button type="submit" class="btn btn-success">Guardar Producte</button>
                 <a th:href="@{/Random/productos}" class="btn btn-secondary">Cancelar</a>
             </div>
         </form>

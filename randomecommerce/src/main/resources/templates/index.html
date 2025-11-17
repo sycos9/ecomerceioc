@@ -23,7 +23,7 @@
       <div class="logo">E-random-Comerç</div>
       <nav class="nav-links">
         <a th:href="@{/Random}">Inici</a>
-        <a th:href="@{/Random/productos}">Productos</a>
+        <a th:href="@{/Random/productos}">Productes</a>
         <a href="#">Blog</a>
       </nav>
       <div class="nav-icons">
@@ -63,7 +63,7 @@
             <a th:href="@{/Random(categoria=${cat}, busqueda=${busqueda})}" 
                th:text="${cat}"
                th:class="${categoriaSeleccionada == cat} ? 'active' : ''">
-              Categoría
+              Categoria
             </a>
           </li>
         </ul>
@@ -109,7 +109,7 @@
                         <span class="text-muted small me-2" th:text="${producto.codigo}">COD</span>
                       </a>
                       <a th:href="@{/Random/productos/{id}(id=${producto.id}, categoria=${categoriaSeleccionada}, busqueda=${busqueda})}" style="text-decoration: none; color: inherit;">
-                        <h5 class="card-title mb-0" th:text="${producto.nombre}">Nombre del producto</h5>
+                        <h5 class="card-title mb-0" th:text="${producto.nombre}">Nom del producte</h5>
                       </a>
                     </div>
                     <span class="text-primary fw-bold fs-5 ms-3" th:text="${'€' + #numbers.formatDecimal(producto.precio, 1, 2)}">€0.00</span>
@@ -117,14 +117,14 @@
                   
                   <!-- Categoría -->
                   <div class="mb-3">
-                    <span class="badge bg-secondary" th:text="${producto.categoria}">Categoría</span>
+                    <span class="badge bg-secondary" th:text="${producto.categoria}">Categoria</span>
                   </div>
                   
                   <!-- Botón añadir al carro -->
                   <button class="btn btn-primary mt-auto" 
                           th:data-producto-id="${producto.id}"
                           onclick="añadirAlCarro(this.dataset.productoId)">
-                    <i class="fa-solid fa-cart-plus"></i> Añadir al carro
+                    <i class="fa-solid fa-cart-plus"></i> Afegeix al carro
                   </button>
                 </div>
               </div>
@@ -134,7 +134,7 @@
             <div th:if="${productos == null or productos.isEmpty()}" class="col-12">
               <div class="text-center text-muted py-5">
                 <i class="fa-solid fa-box-open fa-3x mb-3"></i>
-                <p>No hay productos disponibles</p>
+                <p>No hi ha productes disponibles</p>
               </div>
             </div>
           </div>
@@ -177,7 +177,7 @@
     <script>
       function añadirAlCarro(productoId) {
         // TODO: Implementar lógica del carro de compras
-        alert('Producto con ID ' + productoId + ' añadido al carro');
+        alert('Producte amb ID ' + productoId + ' afegit al carro');
       }
     </script>
   </body>

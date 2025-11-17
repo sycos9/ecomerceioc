@@ -3,7 +3,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Lista de Productos - E-random-Comerç</title>
+    <title>Llista de Productes - E-random-Comerç</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/style.css}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -45,29 +45,29 @@
         </div>
 
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2>Lista de Productos</h2>
+            <h2>Llista de Productes</h2>
             <!-- Botón para añadir producto -->
             <a th:href="@{/Random/productos/nuevo}" class="btn btn-primary">
-                <i class="fa-solid fa-plus"></i> Añadir Producto
+                <i class="fa-solid fa-plus"></i> Afegeix un Producte
             </a>
         </div>
 
         <!-- Mostrar total de productos -->
         <p th:if="${productos != null and !productos.isEmpty()}" class="text-muted">
-            Total de productos: <strong th:text="${productos.size()}">0</strong>
+            Total de productes: <strong th:text="${productos.size()}">0</strong>
         </p>
 
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Imagen</th>
-                    <th>Código</th>
-                    <th>Nombre</th>
-                    <th>Descripción</th>
-                    <th>Precio</th>
+                    <th>Imatge</th>
+                    <th>Codi</th>
+                    <th>Nom</th>
+                    <th>Descripció</th>
+                    <th>Preu</th>
                     <th>Stock</th>
-                    <th>Categoría</th>
-                    <th>Acciones</th>
+                    <th>Categoria</th>
+                    <th>Accions</th>
                 </tr>
             </thead>
             <tbody>
@@ -81,15 +81,15 @@
                              style="max-width: 80px; max-height: 80px; object-fit: cover;">
                         <span th:if="${producto.imagen == null or producto.imagen.isEmpty()}" 
                               class="text-muted">
-                            <i class="fa-solid fa-image"></i> Sin imagen
+                            <i class="fa-solid fa-image"></i> Sense imatge
                         </span>
                     </td>
                     <td th:text="${producto.codigo}">P001</td>
-                    <td th:text="${producto.nombre}">Producto</td>
-                    <td th:text="${producto.descripcion}">Descripción</td>
+                    <td th:text="${producto.nombre}">Producte</td>
+                    <td th:text="${producto.descripcion}">Descripció</td>
                     <td th:text="${'€' + #numbers.formatDecimal(producto.precio, 1, 2)}">€10.00</td>
                     <td th:text="${producto.stock}">100</td>
-                    <td th:text="${producto.categoria}">Categoría</td>
+                    <td th:text="${producto.categoria}">Categoria</td>
                     <td>
                         <a th:href="@{/Random/productos/editar/{id}(id=${producto.id})}" class="btn btn-warning btn-sm">
                             <i class="fa-solid fa-edit"></i>
@@ -108,9 +108,9 @@
                 <tr th:if="${productos == null or productos.isEmpty()}">
                     <td colspan="8" class="text-center text-muted py-4">
                         <i class="fa-solid fa-box-open fa-3x mb-3"></i>
-                        <p>No hay productos registrados</p>
+                        <p>No hi ha productes registrats</p>
                         <a th:href="@{/Random/productos/nuevo}" class="btn btn-sm btn-primary">
-                            Añadir primer producto
+                            Afegeix el primer producte
                         </a>
                     </td>
                 </tr>
@@ -147,7 +147,7 @@
 
         Swal.fire({
             title: '¿Estás seguro?',
-            text: "Deseas eliminar el producto: " + nombre,
+            text: "Vols eliminar el producte: " + nombre,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',

@@ -1,124 +1,155 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Nou Producte</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/style.css}" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-    />
-</head>
-<body>
-    <header class="navbar">
-      <div class="logo">E-random-Comerç</div>
-      <nav class="nav-links">
-        <a th:href="@{/Random}">Inici</a>
-        <a href="#">Botiga</a>
-        <a href="#">Blog</a>
-      </nav>
-      <div class="nav-icons">
-        <input type="text" placeholder="Cercar..." class="search-bar" />
-        <button class="icon">
-          <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
-        <button class="icon"><i class="fa-solid fa-cart-shopping"></i></button>
-        <button class="icon"><i class="fa-solid fa-user"></i></button>
-      </div>
-    </header>
+    <head>
+        <meta charset="UTF-8">
+        <title>Nou Producte</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" th:href="@{/style.css}" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+            rel="stylesheet"
+            />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+            />
+    </head>
+    <body>
+        <!-- Barra de navegació -->
+        <header class="navbar">
+            <div class="logo">E-random-Comerç</div>
 
-    <div class="container mt-5">
-        <h2>Crear Producte</h2>
+            <nav class="nav-links">
+                <a th:href="@{/Random}">Inici</a>
+                <a th:href="@{/Random/productos}">Productes</a>
+                <a href="#">Blog</a>
+            </nav>
 
-        <!-- Mensaje de error -->
-        <div th:if="${error}" class="alert alert-danger" role="alert">
-            <i class="fa-solid fa-triangle-exclamation"></i>
-            <span th:text="${error}"></span>
+            <div class="nav-icons">
+
+                <!-- BUSCADOR -->
+                <form th:action="@{/Random}" method="get" class="d-flex align-items-center" style="gap: 5px;">
+                    <input type="text" 
+                           name="busqueda" 
+                           placeholder="Cercar..."
+                           class="search-bar"
+                           th:value="${busqueda}" />
+                    <input type="hidden" name="categoria" th:value="${categoriaSeleccionada}" />
+                    <button type="submit" class="icon" style="border: none; background: none; cursor: pointer;">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </form>
+
+                <!-- CARRITO -->
+                <a th:href="@{/carret}" class="icon">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                </a>
+
+                <!-- OPCIONS D'USUARI: DEPÈN DE SI ESTÀ LOGUEJAT -->
+
+                <!-- SI NO ESTÀ LOGUEJAT -->
+                <a th:if="${session.usuari == null}" th:href="@{/login}" class="btn btn-sm btn-outline-success">
+                    Inicia sessió
+                </a>
+
+                <!-- SI ESTÀ LOGUEJAT: MOSTRA NOM I BOTÓ LOGOUT -->
+                <div th:if="${session.usuari != null}" class="d-flex align-items-center gap-2">
+                    <span class="fw-semibold" th:text="${session.usuari.username}"></span>
+                    <a th:href="@{/logout}" class="btn btn-sm btn-outline-danger">
+                        Tanca sessió
+                    </a>
+                </div>
+
+            </div>
+        </header>
+
+        <div class="container mt-5">
+            <h2>Crear Producte</h2>
+
+            <!-- Mensaje de error -->
+            <div th:if="${error}" class="alert alert-danger" role="alert">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span th:text="${error}"></span>
+            </div>
+
+            <form th:action="@{/Random/productos}" th:object="${producto}" method="post" enctype="multipart/form-data">
+                <input type="hidden" th:field="*{id}" />
+
+                <div class="mb-3">
+                    <label for="codigo" class="form-label">Codi</label>
+                    <input type="text" class="form-control" id="codigo" th:field="*{codigo}" required>
+                    <!-- Mensaje de error específico -->
+                    <div th:if="${errorCodigo}" class="text-danger mt-1" th:text="${errorCodigo}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nom</label>
+                    <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="descripcion" class="form-label">Descripció</label>
+                    <textarea id="descripcion" th:field="*{descripcion}" class="form-control"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="precio" class="form-label">Preu</label>
+                    <input type="number" id="precio" th:field="*{precio}" step="0.01" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="stock" class="form-label">Stock</label>
+                    <input type="number" id="stock" th:field="*{stock}" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="categoria" class="form-label">Categoria</label>
+                    <select id="categoria" th:field="*{categoria}" class="form-select" required>
+                        <option value="">Selecciona una categoria</option>
+                        <option th:each="cat : ${categorias}" 
+                                th:value="${cat}" 
+                                th:text="${cat}"
+                                th:selected="${producto.categoria == cat}">
+                            Categoria
+                        </option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="imagen" class="form-label">Imatge del Producte</label>
+                    <input type="file" id="imagen" name="imagen" class="form-control" accept="image/*">
+                    <small class="form-text text-muted">Formats permesos: JPG, PNG, GIF, WEBP</small>
+                    <div th:if="${producto.imagen != null and !producto.imagen.isEmpty()}" class="mt-2">
+                        <p class="text-muted">Imatge actual:</p>
+                        <img th:src="@{'/imagenes/' + ${producto.imagen}}" alt="Imagen del producto" 
+                             class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-success">Guardar Producte</button>
+                    <a th:href="@{/Random/productos}" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
         </div>
 
-        <form th:action="@{/Random/productos}" th:object="${producto}" method="post" enctype="multipart/form-data">
-            <input type="hidden" th:field="*{id}" />
-
-            <div class="mb-3">
-                <label for="codigo" class="form-label">Codi</label>
-                <input type="text" class="form-control" id="codigo" th:field="*{codigo}" required>
-                <!-- Mensaje de error específico -->
-                <div th:if="${errorCodigo}" class="text-danger mt-1" th:text="${errorCodigo}"></div>
-            </div>
-
-            <div class="mb-3">
-                <label for="nombre" class="form-label">Nom</label>
-                <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="descripcion" class="form-label">Descripció</label>
-                <textarea id="descripcion" th:field="*{descripcion}" class="form-control"></textarea>
-            </div>
-
-            <div class="mb-3">
-                <label for="precio" class="form-label">Preu</label>
-                <input type="number" id="precio" th:field="*{precio}" step="0.01" class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="stock" class="form-label">Stock</label>
-                <input type="number" id="stock" th:field="*{stock}" class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="categoria" class="form-label">Categoria</label>
-                <select id="categoria" th:field="*{categoria}" class="form-select" required>
-                    <option value="">Selecciona una categoria</option>
-                    <option th:each="cat : ${categorias}" 
-                            th:value="${cat}" 
-                            th:text="${cat}"
-                            th:selected="${producto.categoria == cat}">
-                        Categoria
-                    </option>
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label for="imagen" class="form-label">Imatge del Producte</label>
-                <input type="file" id="imagen" name="imagen" class="form-control" accept="image/*">
-                <small class="form-text text-muted">Formats permesos: JPG, PNG, GIF, WEBP</small>
-                <div th:if="${producto.imagen != null and !producto.imagen.isEmpty()}" class="mt-2">
-                    <p class="text-muted">Imatge actual:</p>
-                    <img th:src="@{'/imagenes/' + ${producto.imagen}}" alt="Imagen del producto" 
-                         class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+        <footer class="footer">
+            <div class="footer-links">
+                <div>
+                    <h4>Sobre nosaltres</h4>
+                    <a href="#">Blog</a>
+                    <a href="#">Equip</a>
+                </div>
+                <div>
+                    <h4>Ajuda</h4>
+                    <a href="#">Contacte</a>
+                    <a href="#">Enviaments</a>
+                    <a href="#">Retorns</a>
                 </div>
             </div>
-
-            <div class="mb-3">
-                <button type="submit" class="btn btn-success">Guardar Producte</button>
-                <a th:href="@{/Random/productos}" class="btn btn-secondary">Cancelar</a>
-            </div>
-        </form>
-    </div>
-    
-    <footer class="footer">
-        <div class="footer-links">
-            <div>
-              <h4>Sobre nosaltres</h4>
-              <a href="#">Blog</a>
-              <a href="#">Equip</a>
-            </div>
-            <div>
-              <h4>Ajuda</h4>
-              <a href="#">Contacte</a>
-              <a href="#">Enviaments</a>
-              <a href="#">Retorns</a>
-            </div>
-        </div>
-        <p class="copyright">© 2025 E-random-Comerç. Tots els drets reservats.</p>
-    </footer>
-</body>
+            <p class="copyright">© 2025 E-random-Comerç. Tots els drets reservats.</p>
+        </footer>
+    </body>
 </html>

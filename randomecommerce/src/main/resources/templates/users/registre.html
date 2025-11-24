@@ -1,104 +1,130 @@
 <!DOCTYPE html>
 <html lang="ca" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Registre d'usuari | E-random-Comerç</title>
-    <link rel="stylesheet" th:href="@{/style.css}" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-    />
-  </head>
-
-  <body>
-    <!-- Barra de navegació -->
-    <header class="navbar">
-      <div class="logo">E-random-Comerç</div>
-      <nav class="nav-links">
-        <a th:href="@{/}">Inici</a>
-        <a th:href="@{/botiga}">Botiga</a>
-        <a th:href="@{/blog}">Blog</a>
-      </nav>
-      <div class="nav-icons">
-        <input type="text" placeholder="Cercar..." class="search-bar" />
-        <button class="icon">
-          <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
-        <a th:href="@{/carret}" class="icon">
-            <i class="fa-solid fa-cart-shopping"></i>
-        </a>
-        <a th:href="@{/registre}" class="icon">
-            <i class="fa-solid fa-user"></i>
-        </a>
-      </div>
-    </header>
-
-    <!-- Formulari de registre -->
-    <main class="register-container">
-      <div class="register-card">
-        <h2>Crea el teu compte</h2>
-        <p>Introdueix el teu nom d’usuari i contrasenya per registrar-te.</p>
-
-        <form class="register-form" th:action="@{/registre}" method="post">
-          <div class="form-group">
-            <label for="username">Nom d'usuari</label>
-            <input
-              type="text"
-              id="username"
-              name="username"
-              placeholder="Escriu el teu nom"
-              required
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Registre d'usuari | E-random-Comerç</title>
+        <link rel="stylesheet" th:href="@{/style.css}" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+            rel="stylesheet"
             />
-          </div>
-
-          <div class="form-group">
-            <label for="password">Contrasenya</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              placeholder="********"
-              required
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
             />
-          </div>
+    </head>
 
-          <div class="form-group">
-            <label for="password">Confirma la contrasenya</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              placeholder="********"
-              required
-            />
-          </div>
-            
-          <!-- Mostra missatges del controlador -->
-          <p th:if="${error}" th:text="${error}" style="color: red; font-weight: bold;"></p>
-          <p th:if="${missatge}" th:text="${missatge}" style="color: green; font-weight: bold;"></p>
+    <body>
+        <!-- Barra de navegació -->
+        <header class="navbar">
+            <div class="logo">E-random-Comerç</div>
 
-          <button type="submit" class="btn-register">Registrar-se</button>
+            <nav class="nav-links">
+                <a th:href="@{/Random}">Inici</a>
+                <a th:href="@{/Random/productos}">Productes</a>
+                <a href="#">Blog</a>
+            </nav>
 
-        </form>
-        <p class="login-link">
-            Ja tens un compte?
-            <a th:href="@{/login}">Inicia sessió</a>
-          </p>
-      </div>
-    </main>
+            <div class="nav-icons">
 
-    <!-- Peu de pàgina -->
-    <footer class="footer">
-      <p class="copyright">© 2025 E-random-Comerç. Tots els drets reservats.</p>
-    </footer>
-  </body>
+                <!-- BUSCADOR -->
+                <form th:action="@{/Random}" method="get" class="d-flex align-items-center" style="gap: 5px;">
+                    <input type="text" 
+                           name="busqueda" 
+                           placeholder="Cercar..."
+                           class="search-bar"
+                           th:value="${busqueda}" />
+                    <input type="hidden" name="categoria" th:value="${categoriaSeleccionada}" />
+                    <button type="submit" class="icon" style="border: none; background: none; cursor: pointer;">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </form>
+
+                <!-- CARRITO -->
+                <a th:href="@{/carret}" class="icon">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                </a>
+
+                <!-- OPCIONS D'USUARI: DEPÈN DE SI ESTÀ LOGUEJAT -->
+
+                <!-- SI NO ESTÀ LOGUEJAT -->
+                <a th:if="${session.usuari == null}" th:href="@{/login}" class="btn btn-sm btn-outline-success">
+                    Inicia sessió
+                </a>
+
+                <!-- SI ESTÀ LOGUEJAT: MOSTRA NOM I BOTÓ LOGOUT -->
+                <div th:if="${session.usuari != null}" class="d-flex align-items-center gap-2">
+                    <span class="fw-semibold" th:text="${session.usuari.username}"></span>
+                    <a th:href="@{/logout}" class="btn btn-sm btn-outline-danger">
+                        Tanca sessió
+                    </a>
+                </div>
+
+            </div>
+        </header>
+
+        <!-- Formulari de registre -->
+        <main class="register-container">
+            <div class="register-card">
+                <h2>Crea el teu compte</h2>
+                <p>Introdueix el teu nom d’usuari i contrasenya per registrar-te.</p>
+
+                <form class="register-form" th:action="@{/registre}" method="post">
+                    <div class="form-group">
+                        <label for="username">Nom d'usuari</label>
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            placeholder="Escriu el teu nom"
+                            required
+                            />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Contrasenya</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="********"
+                            required
+                            />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Confirma la contrasenya</label>
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            placeholder="********"
+                            required
+                            />
+                    </div>
+
+                    <!-- Mostra missatges del controlador -->
+                    <p th:if="${error}" th:text="${error}" style="color: red; font-weight: bold;"></p>
+                    <p th:if="${missatge}" th:text="${missatge}" style="color: green; font-weight: bold;"></p>
+
+                    <button type="submit" class="btn-register">Registrar-se</button>
+
+                </form>
+                <p class="login-link">
+                    Ja tens un compte?
+                    <a th:href="@{/login}">Inicia sessió</a>
+                </p>
+            </div>
+        </main>
+
+        <!-- Peu de pàgina -->
+        <footer class="footer">
+            <p class="copyright">© 2025 E-random-Comerç. Tots els drets reservats.</p>
+        </footer>
+    </body>
 </html>
 
 

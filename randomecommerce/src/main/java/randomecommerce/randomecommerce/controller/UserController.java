@@ -1,6 +1,11 @@
 package randomecommerce.randomecommerce.controller;
 
 import randomecommerce.randomecommerce.service.UserService;
+import randomecommerce.randomecommerce.domain.User;
+import randomecommerce.randomecommerce.repository.UserRepository;
+
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +16,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     // Formulari de registre
     @GetMapping("/registre")
@@ -36,7 +44,7 @@ public class UserController {
         }
 
         model.addAttribute("missatge", "Usuari registrat correctament!");
-        return "users/login"; // Redirigeix a login
+        return "users/login"; 
     }
 
     // Formulari de login
@@ -49,7 +57,9 @@ public class UserController {
     @PostMapping("/login")
     public String iniciaSessio(@RequestParam String username,
                                @RequestParam String password,
-                               Model model) {
+                               Model model,
+                               HttpSession sessio) {
+
         boolean valid = userService.validaUsuari(username, password);
 
         if (!valid) {
@@ -57,7 +67,19 @@ public class UserController {
             return "users/login";
         }
 
-        model.addAttribute("usuari", username);
+        // Carregar el user complet des de la BBDD
+        User user = userRepository.findByUsername(username);
+
+        // Guardar usuari a la sessió
+        sessio.setAttribute("usuari", user);
+
         return "redirect:/Random";
+    }
+
+    // Logout
+    @GetMapping("/logout")
+    public String tancarSessio(HttpSession sessio) {
+        sessio.invalidate();
+        return "redirect:/";
     }
 }

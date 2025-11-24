@@ -27,7 +27,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/Random")
+@RequestMapping("/Random/productos")
 public class ProductoController {
     
     private final ProductoRepository productoRepository;
@@ -41,7 +41,6 @@ public class ProductoController {
         this.productoService = productoService;
     }
     
-    // Excluir el campo imagen del binding automático (se maneja manualmente como MultipartFile)
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.setDisallowedFields("imagen");
@@ -60,7 +59,7 @@ public class ProductoController {
     }
     
     // Mostrar lista de productos
-    @GetMapping("/productos")
+    @GetMapping("")
     public String listarProductos(Model model) {
         List<Producto> productos = productoRepository.findAll();
         model.addAttribute("productos", productos);
@@ -68,7 +67,7 @@ public class ProductoController {
     }
     
     // Mostrar detalle de un producto
-    @GetMapping("/productos/{id}")
+    @GetMapping("/{id}")
     public String mostrarProducto(
             @PathVariable Long id,
             @RequestParam(value = "categoria", required = false) String categoria,
@@ -88,7 +87,7 @@ public class ProductoController {
     }
     
     // Mostrar formulario de nuevo producto
-    @GetMapping("/productos/nuevo")
+    @GetMapping("/nuevo")
     public String mostrarFormulario(Model model) {
         model.addAttribute("producto", new Producto());
         model.addAttribute("categorias", productoService.obtenerCategorias());
@@ -96,7 +95,7 @@ public class ProductoController {
     }
     
     // Guardar producto
-    @PostMapping("/productos")
+    @PostMapping("")
     public String guardarProducto(
             @ModelAttribute Producto producto,
             @RequestParam(value = "imagen", required = false) MultipartFile imagen,
@@ -179,7 +178,7 @@ public class ProductoController {
 
 
     
-    @GetMapping("/productos/editar/{id}")
+    @GetMapping("/editar/{id}")
     public String editarProducto(@PathVariable Long id, Model model) {
         Producto producto = productoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Producte no trobat: " + id));
@@ -189,7 +188,7 @@ public class ProductoController {
     }
     
     // Eliminar producto
-    @GetMapping("/productos/eliminar/{id}")
+    @GetMapping("/eliminar/{id}")
     public String eliminarProducto(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         Producto producto = productoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Producte no trobat: " + id));
@@ -200,7 +199,7 @@ public class ProductoController {
                 Path imagenPath = Paths.get(uploadDir).resolve(producto.getImagen()).normalize();
                 Files.deleteIfExists(imagenPath);
             } catch (IOException e) {
-                // Log error pero continuar con la eliminación del producto
+                // Log error pero continuar
             }
         }
 

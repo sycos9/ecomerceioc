@@ -10,10 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import randomecommerce.randomecommerce.service.ProductoService;
 
-/**
- *
- * @author Ignasi
- */
+
 
 @Controller
 public class HomeController {

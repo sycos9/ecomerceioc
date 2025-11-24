@@ -123,8 +123,11 @@
                     <small class="form-text text-muted">Formats permesos: JPG, PNG, GIF, WEBP</small>
                     <div th:if="${producto.imagen != null and !producto.imagen.isEmpty()}" class="mt-2">
                         <p class="text-muted">Imatge actual:</p>
-                        <img th:src="@{'/imagenes/' + ${producto.imagen}}" alt="Imagen del producto" 
-                             class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                        <img th:if="${producto.imagen != null and !producto.imagen.isEmpty()}"
+                            th:src="@{/Random/productos/imagenes/{nombre}(nombre=${producto.imagen})}"
+                            alt="Imagen del producto"
+                            class="img-thumbnail"
+                            style="max-width: 200px; max-height: 200px;">
                     </div>
                 </div>
 

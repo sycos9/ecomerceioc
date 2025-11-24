@@ -105,11 +105,11 @@
                 <!-- Si hay productos, los muestra -->
                 <tr th:each="producto : ${productos}">
                     <td>
-                        <img th:if="${producto.imagen != null and !producto.imagen.isEmpty()}" 
-                             th:src="@{/Random/imagenes/{nombre}(nombre=${producto.imagen})}" 
-                             alt="Imagen del producto" 
-                             class="img-thumbnail" 
-                             style="max-width: 80px; max-height: 80px; object-fit: cover;">
+                        <img th:if="${producto.imagen != null and !producto.imagen.isEmpty()}"
+                            th:src="@{/Random/productos/imagenes/{nombre}(nombre=${producto.imagen})}"
+                            alt="Imagen del producto"
+                            class="img-thumbnail"
+                            style="max-width: 80px; max-height: 80px; object-fit: cover;">
                         <span th:if="${producto.imagen == null or producto.imagen.isEmpty()}" 
                               class="text-muted">
                             <i class="fa-solid fa-image"></i> Sense imatge

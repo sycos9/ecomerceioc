@@ -42,13 +42,10 @@
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
                 </form>
-
-                <!-- CARRITO -->
-                <a th:href="@{/carret}" class="icon">
+                <a th:href="@{/Random/carrito}" class="icon">
                     <i class="fa-solid fa-cart-shopping"></i>
                 </a>
-
-                <!-- OPCIONS D'USUARI: DEPÈN DE SI ESTÀ LOGUEJAT -->
+        <!-- OPCIONS D'USUARI: DEPÈN DE SI ESTÀ LOGUEJAT -->
 
                 <!-- SI NO ESTÀ LOGUEJAT -->
                 <a th:if="${session.usuari == null}" th:href="@{/login}" class="btn btn-sm btn-outline-success">
@@ -66,30 +63,42 @@
             </div>
         </header>
 
-        <div class="container mt-5 mb-5">
-            <!-- Botón volver -->
-            <a th:href="@{/Random(categoria=${categoriaSeleccionada}, busqueda=${busqueda})}" 
-               class="btn btn-secondary mb-4">
-                <i class="fa-solid fa-arrow-left"></i> Tornar a la botiga
-            </a>
+    <div class="container mt-5 mb-5">
+        <!-- Botón volver -->
+        <a th:href="@{/Random(categoria=${categoriaSeleccionada}, busqueda=${busqueda})}" 
+           class="btn btn-secondary mb-4">
+            <i class="fa-solid fa-arrow-left"></i> Tornar a la botiga
+        </a>
 
-            <div class="row">
-                <!-- Imagen del producto -->
-                <div class="col-md-6 mb-4">
-                    <div class="card shadow-sm">
-                        <div style="height: 500px; overflow: hidden; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center;">
-                            <img th:if="${producto.imagen != null and !producto.imagen.isEmpty()}" 
-                                 th:src="@{/Random/imagenes/{nombre}(nombre=${producto.imagen})}" 
-                                 th:alt="${producto.nombre}" 
-                                 class="img-fluid" 
-                                 style="width: 100%; height: 100%; object-fit: cover;">
-                            <span th:if="${producto.imagen == null or producto.imagen.isEmpty()}" 
-                                  class="text-muted">
-                                <i class="fa-solid fa-image fa-5x"></i>
-                            </span>
-                        </div>
+        <div th:if="${mensajeCarrito}" class="alert alert-info alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span th:text="${mensajeCarrito}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div th:if="${errorCarrito}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <span th:text="${errorCarrito}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="row">
+            <!-- Imagen del producto -->
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm">
+                    <div style="height: 500px; overflow: hidden; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+                        <img th:if="${producto.imagen != null and !producto.imagen.isEmpty()}" 
+                            th:src="@{/Random/productos/imagenes/{nombre}(nombre=${producto.imagen})}" 
+                            th:alt="${producto.nombre}" 
+                            class="card-img-top" 
+                            style="width: 100%; height: 100%; object-fit: cover;">
+                        <span th:if="${producto.imagen == null or producto.imagen.isEmpty()}" 
+                              class="text-muted">
+                            <i class="fa-solid fa-image fa-5x"></i>
+                        </span>
                     </div>
                 </div>
+            </div>
 
                 <!-- Información del producto -->
                 <div class="col-md-6">
@@ -126,21 +135,26 @@
                                 </p>
                             </div>
 
-                            <!-- Botón añadir al carro -->
-                            <div class="d-grid gap-2">
-                                <button class="btn btn-primary btn-lg" 
+                        <!-- Botón añadir al carro -->
+                        <div class="d-grid gap-2">
+                            <form th:action="@{/Random/carrito/agregar/{id}(id=${producto.id})}" method="post" class="add-to-cart-form">
+                                <input type="hidden" name="cantidad" value="1">
+                                <input type="hidden" name="redirectUrl" th:value="@{/Random/productos/{id}(id=${producto.id})}">
+                                <button type="button"
+                                        class="btn btn-primary btn-lg"
                                         th:disabled="${producto.stock == 0}"
-                                        th:data-producto-id="${producto.id}"
-                                        onclick="añadirAlCarro(this.dataset.productoId)">
+                                        th:data-stock="${producto.stock}"
+                                        onclick="pedirCantidadYEnviar(this)">
                                     <i class="fa-solid fa-cart-plus"></i> 
                                     <span th:if="${producto.stock > 0}">Afegeix al carro</span>
                                     <span th:if="${producto.stock == 0}">Producte sense stock</span>
                                 </button>
-                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
             <!-- Sección de comentarios -->
             <div class="row mt-5">
@@ -179,16 +193,31 @@
             <p class="copyright">© 2025 E-random-Comerç. Tots els drets reservats.</p>
         </footer>
 
-        <!-- Bootstrap JS -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+      function pedirCantidadYEnviar(button) {
+        const stock = parseInt(button.dataset.stock, 10) || 1;
+        const cantidad = prompt('Quina quantitat vols afegir al carro?', '1');
+        if (cantidad === null) return;
 
-        <!-- Función para añadir al carro -->
-        <script>
-                                            function añadirAlCarro(productoId) {
-                                                // Falta por implementar la lógica del carro de compras
-                                                alert('Producte amb ID ' + productoId + ' afegit al carro');
-                                            }
-        </script>
-    </body>
+        const numero = parseInt(cantidad, 10);
+        if (isNaN(numero) || numero <= 0) {
+            alert('Introdueix un número vàlid.');
+            return;
+        }
+
+        if (numero > stock) {
+            alert(`Només hi ha ${stock} unitats disponibles.`);
+            return;
+        }
+
+        const form = button.closest('form');
+        form.querySelector('input[name="cantidad"]').value = numero;
+        form.submit();
+    }
+    </script>
+</body>
 </html>
 

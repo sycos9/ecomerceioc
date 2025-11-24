@@ -109,4 +109,27 @@ public class ProductoService {
     public List<String> obtenerCategorias() {
         return CATEGORIAS;
     }
+
+    // --- Actualizar stock de un producto (restar el stock vendido) ---
+    public boolean actualizarStock(Long productoId, int cantidadVendida) {
+        Optional<Producto> optionalProducto = productoRepository.findById(productoId);
+        
+        if (optionalProducto.isPresent()) {
+            Producto producto = optionalProducto.get();
+            
+            if (producto.getStock() >= cantidadVendida) {
+                producto.setStock(producto.getStock() - cantidadVendida);
+                productoRepository.save(producto);
+                return true;
+            } else {
+                return false; // No hay suficiente stock
+            }
+        }
+        return false; // Producto no encontrado
+    }
+
+    // --- Guardar o actualizar stock manualmente ---
+    public void guardarStock(Producto producto) {
+        productoRepository.save(producto);
+    }
 }

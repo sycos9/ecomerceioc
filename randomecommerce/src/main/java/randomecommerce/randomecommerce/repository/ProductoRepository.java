@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface ProductoRepository extends JpaRepository<Producto, Long> {
     
-    // --- Buscar productos por nombre (contiene) ---
+    // --- Buscar productos por nombre ---
     List<Producto> findByNombreContainingIgnoreCase(String nombre);
 
     // --- Filtrar por categoría ---

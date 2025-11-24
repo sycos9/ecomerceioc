@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Carro de compra - E-random-Comerç</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/style.css}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    />
+</head>
+<body>
+    <header class="navbar">
+      <div class="logo">E-random-Comerç</div>
+      <nav class="nav-links">
+        <a th:href="@{/Random}">Inici</a>
+        <a th:href="@{/Random/productos}">Productes</a>
+        <a href="#">Blog</a>
+      </nav>
+      <div class="nav-icons">
+        <a th:href="@{/Random}" class="icon">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </a>
+        <a th:href="@{/Random/carrito}" class="icon active"><i class="fa-solid fa-cart-shopping"></i></a>
+        <button class="icon"><i class="fa-solid fa-user"></i></button>
+      </div>
+    </header>
+
+    <div class="container mt-5 mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">
+                <i class="fa-solid fa-cart-shopping me-2"></i>El teu carro
+            </h2>
+            <a th:href="@{/Random/productos}" class="btn btn-outline-secondary">
+                <i class="fa-solid fa-arrow-left"></i> Continua comprant
+            </a>
+        </div>
+
+        <div th:if="${carritoVacio}" class="alert alert-info text-center py-5">
+            <i class="fa-solid fa-cart-shopping fa-3x mb-3"></i>
+            <p class="lead mb-3">Encara no hi ha productes al carro.</p>
+            <a th:href="@{/Random}" class="btn btn-primary">
+                Comença a afegir productes
+            </a>
+        </div>
+
+        <div th:if="${!carritoVacio}">
+            <div class="table-responsive">
+                <table class="table table-striped align-middle">
+                    <thead>
+                        <tr>
+                            <th>Producte</th>
+                            <th>Quantitat</th>
+                            <th>Preu unitari</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="item : ${items}">
+                            <td class="d-flex align-items-center gap-3">
+                                <img th:if="${item.imagen != null}"
+                                    th:src="@{/Random/productos/imagenes/{nombre}(nombre=${item.imagen})}"
+                                    alt="Imatge producte"
+                                    class="rounded"
+                                    style="width: 70px; height: 70px; object-fit: cover;">
+                                <div>
+                                    <p class="mb-0 fw-semibold" th:text="${item.nombre}">Nom</p>
+                                    <small class="text-muted">ID: <span th:text="${item.productoId}">1</span></small>
+                                </div>
+                            </td>
+                            <td th:text="${item.cantidad}">1</td>
+                            <td th:text="${'€' + #numbers.formatDecimal(item.precioUnitario, 1, 2)}">€0.00</td>
+                            <td th:text="${'€' + #numbers.formatDecimal(item.subtotal, 1, 2)}">€0.00</td>
+                            <td>
+                                <form th:action="@{/Random/carrito/eliminar/{id}(id=${item.productoId})}" method="post">
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="fa-solid fa-trash"></i> Eliminar
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="3" class="text-end">Total</th>
+                            <th th:text="${'€' + #numbers.formatDecimal(total, 1, 2)}">€0.00</th>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                <div class="d-flex justify-content-end mt-4">
+                    <a th:href="@{/Random/checkout}" class="btn btn-success btn-lg">
+                        <i class="fa-solid fa-credit-card me-2"></i> Continuar pagant
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-links">
+            <div>
+              <h4>Sobre nosaltres</h4>
+              <a href="#">Blog</a>
+              <a href="#">Equip</a>
+            </div>
+            <div>
+              <h4>Ajuda</h4>
+              <a href="#">Contacte</a>
+              <a href="#">Enviaments</a>
+              <a href="#">Retorns</a>
+            </div>
+        </div>
+        <p class="copyright">© 2025 E-random-Comerç. Tots els drets reservats.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

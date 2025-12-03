@@ -3,6 +3,8 @@ package randomecommerce.randomecommerce.controller;
 import randomecommerce.randomecommerce.service.UserService;
 import randomecommerce.randomecommerce.domain.User;
 import randomecommerce.randomecommerce.repository.UserRepository;
+import randomecommerce.randomecommerce.repository.RolRepository;
+import randomecommerce.randomecommerce.domain.Rol;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -19,6 +21,9 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RolRepository rolRepository;
 
     // Formulari de registre
     @GetMapping("/registre")
@@ -37,7 +42,13 @@ public class UserController {
             return "users/registre";
         }
 
-        boolean creat = userService.registrarUsuari(username, password);
+        Rol rolUsuario = rolRepository.findByNombre("USER");
+        if (rolUsuario == null) {
+            rolUsuario = new Rol("USER");
+            rolRepository.save(rolUsuario);
+        }
+
+        boolean creat = userService.registrarUsuari(username, password, rolUsuario);
         if (!creat) {
             model.addAttribute("error", "Aquest usuari ja existeix!");
             return "users/registre";

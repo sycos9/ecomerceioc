@@ -162,18 +162,15 @@
 
                                     <!-- Botón añadir al carro -->
                                     <div class="d-grid">
-                                        <form th:action="@{/Random/carrito/agregar/{id}(id=${producto.id})}" method="post" class="add-to-cart-form">
-                                            <input type="hidden" name="cantidad" value="1" />
-                                            <input type="hidden" name="redirectUrl" th:value="@{/Random}" />
-
-                                            <button type="button"
-                                                    class="btn btn-primary w-100 mt-auto"
-                                                    th:data-stock="${producto.stock}"
-                                                    onclick="pedirCantidadYEnviar(this)">
-                                                <i class="fa-solid fa-cart-plus"></i> Afegeix al carro
-                                            </button>
-                                        </form>
-
+                                      <button type="button"
+                                              class="btn btn-primary w-100 mt-auto btn-add-to-cart"
+                                              data-bs-toggle="modal"
+                                              data-bs-target="#modalCantidad"
+                                              th:attr="data-producto-id=${producto.id},
+                                                      data-producto-nombre=${producto.nombre},
+                                                      data-stock=${producto.stock}">
+                                          <i class="fa-solid fa-cart-plus"></i> Afegeix al carro
+                                      </button>
                                     </div>
                                 </div>
                             </div>
@@ -219,30 +216,183 @@
             <p class="copyright">© 2025 E-random-Comerç. Tots els drets reservats.</p>
         </footer>
 
+        <!-- Modal Selección de Cantidad -->
+        <div class="modal fade" id="modalCantidad" tabindex="-1" aria-labelledby="modalCantidadLabel" aria-hidden="true">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                  <form id="formAgregar" method="post">
+                      <div class="modal-header">
+                          <h5 class="modal-title" id="modalCantidadLabel">Selecciona cantidad</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+
+                      <div class="modal-body">
+                          <!-- Nombre del producto -->
+                          <p class="fw-bold mb-3">
+                              <i class="fa-solid fa-box"></i>
+                              <span id="productoNombre"></span>
+                          </p>
+
+                          <!-- Cantidad máxima disponible -->
+                          <p>
+                              Stock disponible:
+                              <span id="stockDisponible" class="fw-bold text-success"></span>
+                          </p>
+
+                          <!-- Selector de cantidad -->
+                          <div class="d-flex align-items-center gap-2">
+                              <button type="button" class="btn btn-secondary btn-sm" id="restar">-</button>
+
+                              <input id="cantidadInput"
+                                    type="number"
+                                    name="cantidad"
+                                    class="form-control text-center"
+                                    min="1"
+                                    value="1">
+
+                              <button type="button" class="btn btn-secondary btn-sm" id="sumar">+</button>
+                          </div>
+
+                          <input type="hidden" name="redirectUrl" id="redirectUrl" />
+                      </div>
+
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel·lar</button>
+                          <button type="submit" class="btn btn-primary">
+                              <i class="fa-solid fa-cart-plus"></i> Afegir
+                          </button>
+                      </div>
+                  </form>
+              </div>
+          </div>
+        </div>
+
         <!-- Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
         <!-- Función para añadir al carro -->
         <script>
-
-                                function pedirCantidadYEnviar(button) {
-                                    const stock = parseInt(button.dataset.stock, 10) || 1;
-                                    const cantidad = prompt('Quina quantitat vols afegir al carro?', '1');
-                                    if (cantidad === null) {
-                                        return;
-                                    }
-                                    const numero = parseInt(cantidad, 10);
-                                    if (isNaN(numero) || numero <= 0) {
-                                        alert('Introdueix un número vàlid.');
-                                        return;
-                                    }
-                                    const cantidadFinal = Math.min(numero, stock);
-                                    const form = button.closest('form');
-                                    form.querySelector('input[name="cantidad"]').value = cantidadFinal;
-                                    form.submit();
-                                }
-
-        </script>
+          document.addEventListener("DOMContentLoaded", () => {
+              const modal = document.getElementById("modalCantidad");
+              const cantidadInput = document.getElementById("cantidadInput");
+              const stockDisponibleSpan = document.getElementById("stockDisponible");
+              const productoNombreSpan = document.getElementById("productoNombre");
+              const btnSumar = document.getElementById("sumar");
+              const btnRestar = document.getElementById("restar");
+              const form = document.getElementById("formAgregar");
+              const redirectUrlInput = document.getElementById("redirectUrl");
+      
+              // Cuando se abre el modal
+              modal.addEventListener("show.bs.modal", (event) => {
+                  const button = event.relatedTarget;
+      
+                  const productoId = button.getAttribute("data-producto-id");
+                  const productoNombre = button.getAttribute("data-producto-nombre");
+                  const stockDisponible = parseInt(button.getAttribute("data-stock"), 10);
+      
+                  // Actualizar la información del modal
+                  productoNombreSpan.textContent = productoNombre;
+                  stockDisponibleSpan.textContent = stockDisponible + " unitats";
+      
+                  // Resetear cantidad a 1
+                  cantidadInput.value = 1;
+                  cantidadInput.max = stockDisponible;
+      
+                  // Configurar la URL del formulario y redirección a la misma página
+                  form.setAttribute("action", `/Random/carrito/agregar/${productoId}`);
+                  
+                  // Obtener los parámetros actuales de búsqueda y categoría
+                  const urlParams = new URLSearchParams(window.location.search);
+                  const categoria = urlParams.get('categoria') || '';
+                  const busqueda = urlParams.get('busqueda') || '';
+                  
+                  // Construir URL de redirección manteniendo filtros
+                  let redirectUrl = '/Random';
+                  if (categoria || busqueda) {
+                      redirectUrl += '?';
+                      if (categoria) redirectUrl += 'categoria=' + encodeURIComponent(categoria);
+                      if (categoria && busqueda) redirectUrl += '&';
+                      if (busqueda) redirectUrl += 'busqueda=' + encodeURIComponent(busqueda);
+                  }
+                  
+                  redirectUrlInput.value = redirectUrl;
+              });
+      
+              // Botón sumar
+              btnSumar.addEventListener("click", () => {
+                  const max = parseInt(cantidadInput.max, 10);
+                  let val = parseInt(cantidadInput.value, 10);
+                  if (val < max) {
+                      cantidadInput.value = val + 1;
+                  }
+              });
+      
+              // Botón restar
+              btnRestar.addEventListener("click", () => {
+                  let val = parseInt(cantidadInput.value, 10);
+                  if (val > 1) {
+                      cantidadInput.value = val - 1;
+                  }
+              });
+      
+              // Enviar con AJAX para actualizar sin recargar
+              form.addEventListener("submit", async (e) => {
+                  e.preventDefault();
+                  
+                  const formData = new FormData(form);
+                  const cantidad = parseInt(formData.get('cantidad'), 10);
+                  const button = document.querySelector(`[data-producto-id="${form.action.split('/').pop()}"]`);
+                  
+                  try {
+                      const response = await fetch(form.action, {
+                          method: 'POST',
+                          body: formData
+                      });
+                      
+                      if (response.ok) {
+                          // Actualizar el stock del botón
+                          const stockActual = parseInt(button.getAttribute('data-stock'), 10);
+                          const nuevoStock = stockActual - cantidad;
+                          button.setAttribute('data-stock', nuevoStock);
+                          
+                          // Cerrar el modal
+                          const modalInstance = bootstrap.Modal.getInstance(modal);
+                          modalInstance.hide();
+                          
+                          // Mostrar mensaje de éxito
+                          const alertDiv = document.createElement('div');
+                          alertDiv.className = 'alert alert-success alert-dismissible fade show mt-3';
+                          alertDiv.innerHTML = `
+                              <i class="fa-solid fa-check-circle"></i>
+                              S'ha afegit ${cantidad} unitat(s) al carret!
+                              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                          `;
+                          
+                          const productSection = document.querySelector('.product-section');
+                          productSection.insertBefore(alertDiv, productSection.firstChild);
+                          
+                          // Auto-cerrar después de 3 segundos
+                          setTimeout(() => alertDiv.remove(), 3000);
+                          
+                          // Si no queda stock, cambiar el botón
+                          if (nuevoStock <= 0) {
+                              button.setAttribute('data-bs-toggle', '');
+                              button.setAttribute('data-bs-target', '');
+                              button.disabled = true;
+                              button.classList.remove('btn-primary');
+                              button.classList.add('btn-secondary');
+                              button.innerHTML = '<i class="fa-solid fa-box-open"></i> Sense stock';
+                          }
+                      } else {
+                          alert('Error al afegir al carret');
+                      }
+                  } catch (error) {
+                      console.error('Error:', error);
+                      alert('Error de connexió');
+                  }
+              });
+          });
+      </script>
     </body>
 </html>
 

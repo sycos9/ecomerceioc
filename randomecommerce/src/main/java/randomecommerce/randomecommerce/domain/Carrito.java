@@ -84,6 +84,15 @@ public class Carrito implements Serializable {
         return item != null ? item.getCantidad() : 0;
     }
 
+    public boolean hayStockDisponible(Producto producto) {
+        int cantidadEnCarrito = getCantidadEnCarrito(producto.getId());
+        return producto.getStock() - cantidadEnCarrito > 0;
+    }
+
+    public int getStockDisponible(Producto producto) {
+        return producto.getStock() - getCantidadEnCarrito(producto.getId());
+    }
+
     public static class CarritoItem implements Serializable {
         private final Long productoId;
         private final String nombre;
@@ -113,6 +122,10 @@ public class Carrito implements Serializable {
             if (cantidadExtra > 0) {
                 this.cantidad += cantidadExtra;
             }
+        }
+
+        public int getStockDisponible(Producto producto) {
+            return producto.getStock() - getCantidad();
         }
     }
 }

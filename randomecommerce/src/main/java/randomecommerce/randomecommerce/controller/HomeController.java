@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import randomecommerce.randomecommerce.service.ProductoService;
+import randomecommerce.randomecommerce.domain.Carrito;
 
 
 
@@ -25,7 +26,8 @@ public class HomeController {
     public String mostrarInicio(
             @RequestParam(value = "categoria", required = false) String categoria,
             @RequestParam(value = "busqueda", required = false) String busqueda,
-            Model model) {
+            Model model,
+            Carrito carrito) {
         
         // Validar y normalizar parámetros
         String busquedaNormalizada = (busqueda != null && !busqueda.trim().isEmpty()) 
@@ -39,6 +41,7 @@ public class HomeController {
         // Usar el servicio para buscar y filtrar productos
         model.addAttribute("productos", 
             productoService.buscarYFiltrarProductos(busquedaNormalizada, categoriaValida));
+        model.addAttribute("carrito", carrito);
         
         // Pasar parámetros al modelo para la vista
         model.addAttribute("busqueda", busquedaNormalizada);

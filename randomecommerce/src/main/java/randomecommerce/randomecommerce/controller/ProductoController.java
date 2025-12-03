@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import randomecommerce.randomecommerce.domain.Carrito;
 import randomecommerce.randomecommerce.domain.User;
 
 @Controller
@@ -74,10 +75,12 @@ public class ProductoController {
             @PathVariable Long id,
             @RequestParam(value = "categoria", required = false) String categoria,
             @RequestParam(value = "busqueda", required = false) String busqueda,
-            Model model) {
+            Model model,
+            Carrito carrito) {
         Producto producto = productoService.buscarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Producte no trobat: " + id));
         model.addAttribute("producto", producto);
+        model.addAttribute("carrito", carrito);
         // Pasar los parámetros de filtro para mantenerlos al volver
         if (busqueda != null && !busqueda.trim().isEmpty()) {
             model.addAttribute("busqueda", busqueda.trim());

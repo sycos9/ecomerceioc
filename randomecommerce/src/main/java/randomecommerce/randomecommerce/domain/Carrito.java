@@ -79,6 +79,11 @@ public class Carrito implements Serializable {
         items.remove(productoId);
     }
 
+    public int getCantidadEnCarrito(Long productoId) {
+        CarritoItem item = items.get(productoId);
+        return item != null ? item.getCantidad() : 0;
+    }
+
     public static class CarritoItem implements Serializable {
         private final Long productoId;
         private final String nombre;

@@ -16,11 +16,16 @@ public class User {
     @Column(nullable = false, length = 10)
     private String password;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "rol_id", nullable = false)
+    private Rol rol;
+
     public User() {}
 
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+        this.rol = rol;
     }
 
     public Long getId() { return id; }
@@ -30,4 +35,7 @@ public class User {
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+
+    public Rol getRol() { return rol; }
+    public void setRol(Rol rol) { this.rol = rol; }
 }

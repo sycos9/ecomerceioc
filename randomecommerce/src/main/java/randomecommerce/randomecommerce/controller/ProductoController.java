@@ -1,5 +1,6 @@
 package randomecommerce.randomecommerce.controller;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import randomecommerce.randomecommerce.domain.User;
 
 @Controller
 @RequestMapping("/Random/productos")
@@ -88,10 +90,15 @@ public class ProductoController {
     
     // Mostrar formulario de nuevo producto
     @GetMapping("/nuevo")
-    public String mostrarFormulario(Model model) {
+    public String mostrarFormulario(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("usuari");
+        if (user == null || !user.getRol().getNombre().equals("ADMIN")) {
+            return "redirect:/Random"; // Redirige si no es admin
+        }
+
         model.addAttribute("producto", new Producto());
         model.addAttribute("categorias", productoService.obtenerCategorias());
-        return "productos/formulario"; // templates/productos/formulario.html
+        return "productos/formulario";
     }
     
     // Guardar producto
@@ -179,28 +186,36 @@ public class ProductoController {
 
     
     @GetMapping("/editar/{id}")
-    public String editarProducto(@PathVariable Long id, Model model) {
+    public String editarProducto(@PathVariable Long id, Model model, HttpSession session) {
+        User user = (User) session.getAttribute("usuari");
+        if (user == null || !user.getRol().getNombre().equals("ADMIN")) {
+            return "redirect:/Random"; 
+        }
+
         Producto producto = productoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Producte no trobat: " + id));
         model.addAttribute("producto", producto);
         model.addAttribute("categorias", productoService.obtenerCategorias());
-        return "productos/formulario"; // reutilizamos el formulario
+        return "productos/formulario";
     }
     
     // Eliminar producto
     @GetMapping("/eliminar/{id}")
-    public String eliminarProducto(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String eliminarProducto(@PathVariable Long id, RedirectAttributes redirectAttributes, HttpSession session) {
+        User user = (User) session.getAttribute("usuari");
+        if (user == null || !user.getRol().getNombre().equals("ADMIN")) {
+            return "redirect:/Random"; 
+        }
+
         Producto producto = productoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Producte no trobat: " + id));
-
-        // Eliminar la imagen asociada si existe
+        
+        // Eliminar imagen asociada si existe
         if (producto.getImagen() != null && !producto.getImagen().isEmpty()) {
             try {
                 Path imagenPath = Paths.get(uploadDir).resolve(producto.getImagen()).normalize();
                 Files.deleteIfExists(imagenPath);
-            } catch (IOException e) {
-                // Log error pero continuar
-            }
+            } catch (IOException e) { }
         }
 
         productoRepository.delete(producto);

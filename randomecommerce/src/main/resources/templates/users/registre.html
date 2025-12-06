@@ -18,24 +18,24 @@
             />
     </head>
 
-    
-    
+
+
     <body>
         <!-- Barra de navegació -->
         <header class="navbar">
-            <a th:href="@{/Random}" class="d-flex align-items-center me-4 text-decoration-none">
-                <img src="/images/logo-erandom.png" alt="eRandom Logo" style="height:50px;">
-            </a>
-
+            <div class="nav-logo">
+                <a th:href="@{/Random}" class="d-flex align-items-center me-4 text-decoration-none">
+                    <img src="/images/logo-erandom.png" alt="eRandom Logo" style="height:50px;">
+                </a>
+            </div>
             <nav class="nav-links">
                 <a th:href="@{/Random}">Inici</a>
                 <a th:if="${session.usuari != null and session.usuari.rol.nombre == 'ADMIN'}"
-                th:href="@{/Random/productos}">
-                Productes
+                   th:href="@{/Random/productos}">
+                    Productes
                 </a>
                 <a href="#">Blog</a>
             </nav>
-
             <div class="nav-icons">
 
                 <!-- BUSCADOR -->
@@ -51,12 +51,10 @@
                     </button>
                 </form>
 
-                <!-- CARRITO -->
+                <!-- CARRET -->
                 <a th:href="@{/carret}" class="icon">
                     <i class="fa-solid fa-cart-shopping"></i>
                 </a>
-
-                <!-- OPCIONS D'USUARI: DEPÈN DE SI ESTÀ LOGUEJAT -->
 
                 <!-- SI NO ESTÀ LOGUEJAT -->
                 <a th:if="${session.usuari == null}" th:href="@{/login}" class="btn btn-sm btn-outline-success">

@@ -22,6 +22,11 @@ public class HomeController {
         this.productoService = productoService;
     }
 
+    @GetMapping("/Random/equip")
+    public String mostrarEquip() {
+        return "equip";
+    }
+
     @GetMapping("/Random")
     public String mostrarInicio(
             @RequestParam(value = "categoria", required = false) String categoria,

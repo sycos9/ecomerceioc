@@ -137,38 +137,84 @@
         </div>
 
         <!-- Comentaris -->
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h3>Comentaris</h3>
+        <!-- Comentaris -->
+        <div class="row mt-5">
+            <div class="col-lg-10 mx-auto">
+                <div class="d-flex align-items-center mb-4">
+                    <h3 class="fw-bold mb-0">Comentaris</h3>
+                    <span class="badge bg-secondary ms-2" th:text="${comentarios.size()}">0</span>
+                </div>
 
-                        <div th:if="${session.usuari != null}" class="mb-4">
-                            <form th:action="@{/Random/productos/__${producto.id}__/comentar}" method="post">
-                                <div class="mb-3">
-                                    <label for="contenido" class="form-label">Afegeix un comentari</label>
-                                    <textarea class="form-control" id="contenido" name="contenido" rows="3"
-                                        required></textarea>
+                <!-- Formulario -->
+                <div class="card shadow-sm border-0 mb-5">
+                    <div class="card-body p-4">
+                        <div th:if="${session.usuari != null}">
+                            <div class="d-flex gap-3">
+                                <div class="flex-shrink-0">
+                                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                                        style="width: 48px; height: 48px; font-size: 1.2rem;">
+                                        <i class="fa-solid fa-user"></i>
+                                    </div>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Enviar comentari</button>
-                            </form>
-                        </div>
-                        <div th:if="${session.usuari == null}" class="alert alert-info">
-                            <a th:href="@{/login}">Inicia sessió</a> per a deixar un comentari.
+                                <div class="flex-grow-1">
+                                    <form th:action="@{/Random/productos/__${producto.id}__/comentar}" method="post">
+                                        <div class="mb-3">
+                                            <textarea class="form-control border-0 bg-light p-3" id="contenido"
+                                                name="contenido" rows="3" placeholder="Què en penses d'aquest producte?"
+                                                required style="resize: none;"></textarea>
+                                        </div>
+                                        <div class="d-flex justify-content-end">
+                                            <button type="submit" class="btn btn-primary px-4 fw-semibold">
+                                                <i class="fa-regular fa-paper-plane me-2"></i>Publicar comentari
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="mt-4">
-                            <div th:each="comentario : ${comentarios}" class="border-bottom pb-3 mb-3">
-                                <div class="d-flex justify-content-between">
-                                    <h5 class="fw-bold" th:text="${comentario.usuario.username}">User</h5>
-                                    <small class="text-muted"
-                                        th:text="${#temporals.format(comentario.fecha, 'dd/MM/yyyy HH:mm')}">Date</small>
+                        <div th:if="${session.usuari == null}" class="text-center py-3">
+                            <i class="fa-regular fa-comments fa-3x text-muted mb-3"></i>
+                            <p class="text-muted mb-3">Vols compartir la teva opinió?</p>
+                            <a th:href="@{/login}" class="btn btn-outline-primary px-4 rounded-pill">Inicia sessió per
+                                comentar</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lista de comentarios -->
+                <div class="vstack gap-3">
+                    <div th:each="comentario : ${comentarios}" class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex gap-3">
+                                <div class="flex-shrink-0">
+                                    <div class="bg-secondary bg-opacity-10 text-secondary rounded-circle d-flex align-items-center justify-content-center"
+                                        style="width: 48px; height: 48px;">
+                                        <span class="fw-bold"
+                                            th:text="${#strings.substring(comentario.usuario.username,0,1).toUpperCase()}">U</span>
+                                    </div>
                                 </div>
-                                <p class="mb-0" th:text="${comentario.contenido}">Contenido del comentario</p>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h5 class="fw-bold mb-0" th:text="${comentario.usuario.username}">User</h5>
+                                        <small class="text-muted">
+                                            <i class="fa-regular fa-clock me-1"></i>
+                                            <span
+                                                th:text="${#temporals.format(comentario.fecha, 'dd/MM/yyyy HH:mm')}">Date</span>
+                                        </small>
+                                    </div>
+                                    <p class="mb-0 text-dark" style="line-height: 1.6;"
+                                        th:text="${comentario.contenido}">Contenido</p>
+                                </div>
                             </div>
-                            <div th:if="${#lists.isEmpty(comentarios)}" class="text-muted">
-                                No hi ha comentaris encara. Sigues el primer en comentar!
-                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${#lists.isEmpty(comentarios)}" class="text-center py-5">
+                        <div class="py-5 bg-light rounded-3 border border-dashed">
+                            <i class="fa-solid fa-wind fa-3x text-muted opacity-50 mb-3"></i>
+                            <h5 class="text-muted fw-normal">Encara no hi ha comentaris</h5>
+                            <p class="text-muted small mb-0">Sigues el primer en dir la teva!</p>
                         </div>
                     </div>
                 </div>
@@ -209,7 +255,7 @@
             <div>
                 <h4>Sobre nosaltres</h4>
                 <a href="#">Blog</a>
-                <a href="#">Equip</a>
+                <a th:href="@{/Random/equip}">Equip</a>
             </div>
             <div>
                 <h4>Ajuda</h4>

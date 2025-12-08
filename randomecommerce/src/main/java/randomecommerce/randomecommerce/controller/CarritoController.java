@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import randomecommerce.randomecommerce.domain.Carrito;
 import randomecommerce.randomecommerce.domain.Producto;
+import randomecommerce.randomecommerce.domain.User;
 import randomecommerce.randomecommerce.repository.ProductoRepository;
+import jakarta.servlet.http.HttpSession;
 
 
 @Controller
@@ -26,8 +28,14 @@ public class CarritoController {
             @PathVariable Long id,
             @RequestParam("cantidad") int cantidad,
             @RequestParam(value = "redirectUrl", required = false) String redirectUrl,
-            RedirectAttributes redirectAttributes
+            RedirectAttributes redirectAttributes,
+            HttpSession session
     ) {
+        User user = (User) session.getAttribute("usuari");
+        if (user == null) {
+            return "redirect:/login";
+        }
+
         Producto producto = productoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Producte no trobat: " + id));
 

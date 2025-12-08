@@ -28,6 +28,8 @@ import java.util.Optional;
 import java.util.UUID;
 import randomecommerce.randomecommerce.domain.Carrito;
 import randomecommerce.randomecommerce.domain.User;
+import randomecommerce.randomecommerce.domain.Comentario;
+import randomecommerce.randomecommerce.service.ComentarioService;
 
 @Controller
 @RequestMapping("/Random/productos")
@@ -35,13 +37,15 @@ public class ProductoController {
     
     private final ProductoRepository productoRepository;
     private final ProductoService productoService;
+    private final ComentarioService comentarioService;
     
     @Value("${app.upload.dir:${user.home}/randomecommerce/imagenes}")
     private String uploadDir;
     
-    public ProductoController(ProductoRepository productoRepository, ProductoService productoService) {
+    public ProductoController(ProductoRepository productoRepository, ProductoService productoService, ComentarioService comentarioService) {
         this.productoRepository = productoRepository;
         this.productoService = productoService;
+        this.comentarioService = comentarioService;
     }
     
     @InitBinder
@@ -88,6 +92,10 @@ public class ProductoController {
         if (categoria != null && productoService.esCategoriaValida(categoria)) {
             model.addAttribute("categoriaSeleccionada", categoria);
         }
+        
+        List<Comentario> comentarios = comentarioService.obtenerComentarios(id);
+        model.addAttribute("comentarios", comentarios);
+        
         return "productos/show";
     }
     
@@ -104,7 +112,6 @@ public class ProductoController {
         return "productos/formulario";
     }
     
-    // Guardar producto
     @PostMapping("")
     public String guardarProducto(
             @ModelAttribute Producto producto,
@@ -113,7 +120,7 @@ public class ProductoController {
 
         init();
 
-        // Validar que la categoría sea válida
+        // Validar categoría
         if (producto.getCategoria() == null || !productoService.esCategoriaValida(producto.getCategoria())) {
             model.addAttribute("error", "La categoria seleccionada no és vàlida.");
             model.addAttribute("producto", producto);
@@ -121,69 +128,66 @@ public class ProductoController {
             return "productos/formulario";
         }
 
-        // Buscar si existe un producto con el mismo código
-        Optional<Producto> productoExistente = productoRepository.findByCodigo(producto.getCodigo());
-
-        // Verificar si es duplicado de otro producto
-        if (productoExistente.isPresent() &&
-            (producto.getId() == null || !producto.getId().equals(productoExistente.get().getId()))) {
+        // Verificar duplicado de código
+        Optional<Producto> prodConCodigo = productoRepository.findByCodigo(producto.getCodigo());
+        if (prodConCodigo.isPresent() &&
+            (producto.getId() == null || !producto.getId().equals(prodConCodigo.get().getId()))) {
             model.addAttribute("errorCodigo", "El codi ja existeix. Utilitza un altre codi.");
-            model.addAttribute("producto", producto); // Mantener datos introducidos
+            model.addAttribute("producto", producto);
             model.addAttribute("categorias", productoService.obtenerCategorias());
-            return "productos/formulario"; // Volver a la misma vista
+            return "productos/formulario";
         }
 
-        // Manejar la subida de imagen
+        Producto productoGuardar;
+        if (producto.getId() != null) {
+            // Edición: recuperar existente
+            productoGuardar = productoRepository.findById(producto.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Producte no trobat: " + producto.getId()));
+
+            // Actualizar solo campos editables
+            productoGuardar.setNombre(producto.getNombre());
+            productoGuardar.setCodigo(producto.getCodigo());
+            productoGuardar.setDescripcion(producto.getDescripcion());
+            productoGuardar.setPrecio(producto.getPrecio());
+            productoGuardar.setStock(producto.getStock());
+            productoGuardar.setCategoria(producto.getCategoria());
+        } else {
+            // Creación
+            productoGuardar = producto;
+        }
+
+        // Manejo de imagen (como ya lo tienes)
         if (imagen != null && !imagen.isEmpty()) {
             try {
-                // Generar nombre único para la imagen
                 String nombreOriginal = imagen.getOriginalFilename();
                 String extension = "";
                 if (nombreOriginal != null && nombreOriginal.contains(".")) {
                     extension = nombreOriginal.substring(nombreOriginal.lastIndexOf("."));
                 }
                 String nombreArchivo = UUID.randomUUID().toString() + extension;
-                
-                // Guardar el archivo
+
                 Path rutaArchivo = Paths.get(uploadDir).resolve(nombreArchivo).normalize();
                 Files.copy(imagen.getInputStream(), rutaArchivo, StandardCopyOption.REPLACE_EXISTING);
-                
-                // Si es una edición y hay una imagen anterior, eliminarla
-                if (producto.getId() != null) {
-                    Optional<Producto> productoAnterior = productoRepository.findById(producto.getId());
-                    if (productoAnterior.isPresent() && productoAnterior.get().getImagen() != null) {
-                        Path imagenAnterior = Paths.get(uploadDir).resolve(productoAnterior.get().getImagen()).normalize();
-                        try {
-                            Files.deleteIfExists(imagenAnterior);
-                        } catch (IOException e) {
-                            // Log error pero continuar
-                        }
-                    }
+
+                // Borrar imagen anterior si existe
+                if (productoGuardar.getImagen() != null) {
+                    Path imagenAnterior = Paths.get(uploadDir).resolve(productoGuardar.getImagen()).normalize();
+                    Files.deleteIfExists(imagenAnterior);
                 }
-                
-                // Guardar el nombre del archivo en el producto
-                producto.setImagen(nombreArchivo);
+
+                productoGuardar.setImagen(nombreArchivo);
             } catch (IOException e) {
                 model.addAttribute("error", "Error al pujar la imatge: " + e.getMessage());
                 model.addAttribute("producto", producto);
                 model.addAttribute("categorias", productoService.obtenerCategorias());
                 return "productos/formulario";
             }
-        } else {
-            // Si no se sube nueva imagen y es una edición, mantener la imagen existente
-            if (producto.getId() != null) {
-                Optional<Producto> productoAnterior = productoRepository.findById(producto.getId());
-                if (productoAnterior.isPresent() && productoAnterior.get().getImagen() != null) {
-                    producto.setImagen(productoAnterior.get().getImagen());
-                }
-            }
         }
 
-        // Guardar producto (creación o edición)
-        productoRepository.save(producto);
-        model.addAttribute("mensaje", "Producte guardat exitosament");
+        // Guardar producto actualizado o nuevo
+        productoRepository.save(productoGuardar);
 
-        return "redirect:/Random/productos"; //
+        return "redirect:/Random/productos";
     }
 
 
@@ -260,4 +264,18 @@ public class ProductoController {
         }
     }
     
+    // Guardar nuevo comentario
+    @PostMapping("/{id}/comentar")
+    public String guardarComentario(@PathVariable Long id, @RequestParam("contenido") String contenido, HttpSession session) {
+        User user = (User) session.getAttribute("usuari");
+        if (user != null) {
+            Producto producto = productoService.buscarPorId(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Producte no trobat: " + id));
+            
+            Comentario comentario = new Comentario(contenido, user, producto);
+            comentarioService.guardarComentario(comentario);
+        }
+        return "redirect:/Random/productos/" + id;
+    }
+
 }

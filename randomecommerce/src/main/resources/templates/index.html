@@ -1,76 +1,68 @@
 <!DOCTYPE html>
 <html lang="ca" xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>E-random-Comerç | Botiga</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="/style.css" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
-            rel="stylesheet"
-            />
-        <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-            />
-    </head>
-    <body>
-        <!-- Barra de navegació -->
-        <header class="navbar">
-            <div class="nav-logo">
-                <a th:href="@{/Random}" class="d-flex align-items-center me-4 text-decoration-none">
-                    <img src="/images/logo-erandom.png" alt="eRandom Logo" style="height:50px;">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>E-random-Comerç | Botiga</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+</head>
+
+<body>
+    <!-- Barra de navegació -->
+    <header class="navbar">
+        <div class="nav-logo">
+            <a th:href="@{/Random}" class="d-flex align-items-center me-4 text-decoration-none">
+                <img src="/images/logo-erandom.png" alt="eRandom Logo" style="height:50px;">
+            </a>
+        </div>
+
+        <nav class="nav-links">
+            <a th:href="@{/Random}">Inici</a>
+            <a th:if="${session.usuari != null and session.usuari.rol.nombre == 'ADMIN'}"
+                th:href="@{/Random/productos}">
+                Productes
+            </a>
+            <a href="#">Blog</a>
+        </nav>
+
+        <div class="nav-icons">
+
+            <!-- BUSCADOR -->
+            <form th:action="@{/Random}" method="get" class="d-flex align-items-center" style="gap: 5px;">
+                <input type="text" name="busqueda" placeholder="Cercar..." class="search-bar" th:value="${busqueda}" />
+                <input type="hidden" name="categoria" th:value="${categoriaSeleccionada}" />
+                <button type="submit" class="icon" style="border: none; background: none; cursor: pointer;">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+            <a th:href="@{/Random/carrito}" class="icon">
+                <i class="fa-solid fa-cart-shopping"></i>
+            </a>
+            <!-- OPCIONS D'USUARI: DEPÈN DE SI ESTÀ LOGUEJAT -->
+
+            <!-- SI NO ESTÀ LOGUEJAT -->
+            <a th:if="${session.usuari == null}" th:href="@{/login}" class="btn btn-sm btn-outline-success">
+                Inicia sessió
+            </a>
+
+            <!-- SI ESTÀ LOGUEJAT: MOSTRA NOM I BOTÓ LOGOUT -->
+            <div th:if="${session.usuari != null}" class="d-flex align-items-center gap-2">
+                <span class="fw-semibold" th:text="${session.usuari.username}"></span>
+                <a th:href="@{/logout}" class="btn btn-sm btn-outline-danger">
+                    Tanca sessió
                 </a>
             </div>
 
-            <nav class="nav-links">
-                <a th:href="@{/Random}">Inici</a>
-                <a th:if="${session.usuari != null and session.usuari.rol.nombre == 'ADMIN'}"
-                   th:href="@{/Random/productos}">
-                    Productes
-                </a>
-                <a href="#">Blog</a>
-            </nav>
+        </div>
+    </header>
 
-            <div class="nav-icons">
-
-                <!-- BUSCADOR -->
-                <form th:action="@{/Random}" method="get" class="d-flex align-items-center" style="gap: 5px;">
-                    <input type="text" 
-                           name="busqueda" 
-                           placeholder="Cercar..."
-                           class="search-bar"
-                           th:value="${busqueda}" />
-                    <input type="hidden" name="categoria" th:value="${categoriaSeleccionada}" />
-                    <button type="submit" class="icon" style="border: none; background: none; cursor: pointer;">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
-                </form>
-                <a th:href="@{/Random/carrito}" class="icon">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                </a>
-                <!-- OPCIONS D'USUARI: DEPÈN DE SI ESTÀ LOGUEJAT -->
-
-                <!-- SI NO ESTÀ LOGUEJAT -->
-                <a th:if="${session.usuari == null}" th:href="@{/login}" class="btn btn-sm btn-outline-success">
-                    Inicia sessió
-                </a>
-
-                <!-- SI ESTÀ LOGUEJAT: MOSTRA NOM I BOTÓ LOGOUT -->
-                <div th:if="${session.usuari != null}" class="d-flex align-items-center gap-2">
-                    <span class="fw-semibold" th:text="${session.usuari.username}"></span>
-                    <a th:href="@{/logout}" class="btn btn-sm btn-outline-danger">
-                        Tanca sessió
-                    </a>
-                </div>
-
-            </div>
-        </header>
-
-        <!<!-- BANNER -->
+    <!<!-- BANNER -->
         <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
 
             <!-- BOLETES (INDICADORS) -->
@@ -122,15 +114,14 @@
                 <h3>Categories</h3>
                 <ul>
                     <li>
-                        <a th:href="@{/Random(busqueda=${busqueda})}" 
-                           th:class="${categoriaSeleccionada == null} ? 'active' : ''">
+                        <a th:href="@{/Random(busqueda=${busqueda})}"
+                            th:class="${categoriaSeleccionada == null} ? 'active' : ''">
                             Tots els productes
                         </a>
                     </li>
                     <li th:each="cat : ${categorias}">
-                        <a th:href="@{/Random(categoria=${cat}, busqueda=${busqueda})}" 
-                           th:text="${cat}"
-                           th:class="${categoriaSeleccionada == cat} ? 'active' : ''">
+                        <a th:href="@{/Random(categoria=${cat}, busqueda=${busqueda})}" th:text="${cat}"
+                            th:class="${categoriaSeleccionada == cat} ? 'active' : ''">
                             Categoria
                         </a>
                     </li>
@@ -160,10 +151,13 @@
                 <h2 class="section-title">
                     <span th:if="${busqueda != null and !busqueda.isEmpty()}">
                         Resultats de la cerca: "<span th:text="${busqueda}"></span>"
-                        <span th:if="${categoriaSeleccionada != null}"> en <span th:text="${categoriaSeleccionada}"></span></span>
+                        <span th:if="${categoriaSeleccionada != null}"> en <span
+                                th:text="${categoriaSeleccionada}"></span></span>
                     </span>
                     <span th:if="${busqueda == null or busqueda.isEmpty()}">
-                        <span th:text="${categoriaSeleccionada != null} ? 'Productes: ' + ${categoriaSeleccionada} : 'Productes destacats'">Productes destacats</span>
+                        <span
+                            th:text="${categoriaSeleccionada != null} ? 'Productes: ' + ${categoriaSeleccionada} : 'Productes destacats'">Productes
+                            destacats</span>
                     </span>
                 </h2>
 
@@ -173,15 +167,16 @@
                         <div th:each="producto : ${productos}" class="col-md-6">
                             <div class="card h-100 shadow-sm">
                                 <!-- Imagen del producto -->
-                                <a th:href="@{/Random/productos/{id}(id=${producto.id}, categoria=${categoriaSeleccionada}, busqueda=${busqueda})}" style="text-decoration: none; color: inherit;">
-                                    <div class="card-img-top-container" style="height: 300px; overflow: hidden; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center; cursor: pointer;">
-                                        <img th:if="${producto.imagen != null and !producto.imagen.isEmpty()}" 
-                                             th:src="@{/Random/productos/imagenes/{nombre}(nombre=${producto.imagen})}" 
-                                             th:alt="${producto.nombre}" 
-                                             class="card-img-top" 
-                                             style="width: 100%; height: 100%; object-fit: cover;">
-                                        <span th:if="${producto.imagen == null or producto.imagen.isEmpty()}" 
-                                              class="text-muted">
+                                <a th:href="@{/Random/productos/{id}(id=${producto.id}, categoria=${categoriaSeleccionada}, busqueda=${busqueda})}"
+                                    style="text-decoration: none; color: inherit;">
+                                    <div class="card-img-top-container"
+                                        style="height: 300px; overflow: hidden; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                                        <img th:if="${producto.imagen != null and !producto.imagen.isEmpty()}"
+                                            th:src="@{/Random/productos/imagenes/{nombre}(nombre=${producto.imagen})}"
+                                            th:alt="${producto.nombre}" class="card-img-top"
+                                            style="width: 100%; height: 100%; object-fit: cover;">
+                                        <span th:if="${producto.imagen == null or producto.imagen.isEmpty()}"
+                                            class="text-muted">
                                             <i class="fa-solid fa-image fa-4x"></i>
                                         </span>
                                     </div>
@@ -191,36 +186,41 @@
                                     <!-- Código, Nombre y precio -->
                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                         <div class="d-flex align-items-center">
-                                            <a th:href="@{/Random/productos/{id}(id=${producto.id}, categoria=${categoriaSeleccionada}, busqueda=${busqueda})}" style="text-decoration: none; color: inherit;">
-                                                <span class="text-muted small me-2" th:text="${producto.codigo}">COD</span>
+                                            <a th:href="@{/Random/productos/{id}(id=${producto.id}, categoria=${categoriaSeleccionada}, busqueda=${busqueda})}"
+                                                style="text-decoration: none; color: inherit;">
+                                                <span class="text-muted small me-2"
+                                                    th:text="${producto.codigo}">COD</span>
                                             </a>
-                                            <a th:href="@{/Random/productos/{id}(id=${producto.id}, categoria=${categoriaSeleccionada}, busqueda=${busqueda})}" style="text-decoration: none; color: inherit;">
-                                                <h5 class="card-title mb-0" th:text="${producto.nombre}">Nom del producte</h5>
+                                            <a th:href="@{/Random/productos/{id}(id=${producto.id}, categoria=${categoriaSeleccionada}, busqueda=${busqueda})}"
+                                                style="text-decoration: none; color: inherit;">
+                                                <h5 class="card-title mb-0" th:text="${producto.nombre}">Nom del
+                                                    producte</h5>
                                             </a>
                                         </div>
-                                        <span class="text-primary fw-bold fs-5 ms-3" th:text="${'€' + #numbers.formatDecimal(producto.precio, 1, 2)}">€0.00</span>
+                                        <span class="text-primary fw-bold fs-5 ms-3"
+                                            th:text="${'€' + #numbers.formatDecimal(producto.precio, 1, 2)}">€0.00</span>
                                     </div>
 
                                     <!-- Categoría -->
                                     <div class="mb-3">
-                                        <span class="badge bg-secondary" th:text="${producto.categoria}">Categoria</span>
+                                        <span class="badge bg-secondary"
+                                            th:text="${producto.categoria}">Categoria</span>
                                     </div>
 
                                     <!-- Botón Compra (redirige a show) -->
                                     <div class="d-grid">
-                                        <th:block th:with="stockDisponible=${producto.stock - carrito.getCantidadEnCarrito(producto.id)}">
+                                        <th:block
+                                            th:with="stockDisponible=${producto.stock - carrito.getCantidadEnCarrito(producto.id)}">
                                             <!-- Si HAY stock disponible -->
                                             <a th:if="${stockDisponible > 0}"
-                                               th:href="@{/Random/productos/{id}(id=${producto.id}, categoria=${categoriaSeleccionada}, busqueda=${busqueda})}"
-                                               class="btn btn-primary w-100 mt-auto">
+                                                th:href="@{/Random/productos/{id}(id=${producto.id}, categoria=${categoriaSeleccionada}, busqueda=${busqueda})}"
+                                                class="btn btn-primary w-100 mt-auto">
                                                 <i class="fa-solid fa-shopping-bag"></i> Compra
                                             </a>
 
                                             <!-- Si NO HAY stock disponible -->
-                                            <button th:if="${stockDisponible <= 0}"
-                                                    type="button"
-                                                    class="btn btn-secondary w-100 mt-auto"
-                                                    disabled>
+                                            <button th:if="${stockDisponible <= 0}" type="button"
+                                                class="btn btn-secondary w-100 mt-auto" disabled>
                                                 <i class="fa-solid fa-box-open"></i> Sense stock
                                             </button>
                                         </th:block>
@@ -257,7 +257,7 @@
                 <div>
                     <h4>Sobre nosaltres</h4>
                     <a href="#">Blog</a>
-                    <a href="#">Equip</a>
+                    <a th:href="@{/Random/equip}">Equip</a>
                 </div>
                 <div>
                     <h4>Ajuda</h4>
@@ -273,6 +273,6 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 
-    </body>
-</html>
+</body>
 
+</html>

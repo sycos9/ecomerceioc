@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ca" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Equip - E-random-Comerç</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <style>
+        .team-hero {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 80px 0;
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .team-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            overflow: hidden;
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .team-img-container {
+            height: 250px;
+            overflow: hidden;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ioc-badge {
+            background-color: #004d99;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Barra de navegació -->
+    <header class="navbar">
+        <div class="nav-logo">
+            <a th:href="@{/Random}" class="d-flex align-items-center me-4 text-decoration-none">
+                <img src="/images/logo-erandom.png" alt="eRandom Logo" style="height:50px;">
+            </a>
+        </div>
+
+        <nav class="nav-links">
+            <a th:href="@{/Random}">Inici</a>
+            <a th:if="${session.usuari != null and session.usuari.rol.nombre == 'ADMIN'}"
+                th:href="@{/Random/productos}">
+                Productes
+            </a>
+            <a href="#">Blog</a>
+        </nav>
+
+        <div class="nav-icons">
+            <!-- BUSCADOR -->
+            <form th:action="@{/Random}" method="get" class="d-flex align-items-center" style="gap: 5px;">
+                <input type="text" name="busqueda" placeholder="Cercar..." class="search-bar" />
+                <button type="submit" class="icon" style="border: none; background: none; cursor: pointer;">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+            <a th:href="@{/Random/carrito}" class="icon">
+                <i class="fa-solid fa-cart-shopping"></i>
+            </a>
+
+            <!-- SI NO ESTÀ LOGUEJAT -->
+            <a th:if="${session.usuari == null}" th:href="@{/login}" class="btn btn-sm btn-outline-success">
+                Inicia sessió
+            </a>
+
+            <!-- SI ESTÀ LOGUEJAT -->
+            <div th:if="${session.usuari != null}" class="d-flex align-items-center gap-2">
+                <span class="fw-semibold" th:text="${session.usuari.username}"></span>
+                <a th:href="@{/logout}" class="btn btn-sm btn-outline-danger">
+                    Tanca sessió
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contingut principal -->
+    <main>
+
+        <!-- Hero Section -->
+        <section class="team-hero">
+            <div class="container">
+                <p class="ioc-badge">Projecte Final DAW</p>
+                <h1 class="display-4 fw-bold mb-3">El Nostre Equip</h1>
+                <p class="lead text-muted mx-auto" style="max-width: 700px;">
+                    Som dos estudiants de l'Institut Obert de Catalunya (IOC), aplicant els nostres coneixements per
+                    realitzar el nostre projecte final de Desenvolupament d'Aplicacions Web.
+                </p>
+            </div>
+        </section>
+
+        <div class="container mb-5">
+            <div class="row justify-content-center g-5">
+
+                <div class="col-md-5">
+                    <div class="card team-card h-100 text-center">
+                        <div class="team-img-container">
+                            <i class="fa-solid fa-user-graduate fa-6x text-secondary"></i>
+                        </div>
+                        <div class="card-body p-4">
+                            <h3 class="card-title fw-bold">Ignasi Garcia de Haro</h3>
+                            <p class="text-primary fw-semibold">DAW</p>
+                            <div class="d-flex justify-content-center gap-3 mt-3">
+                                <a href="https://github.com/sycos9" target="_blank"
+                                    class="btn btn-outline-secondary btn-sm rounded-circle"><i
+                                        class="fa-brands fa-github"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="card team-card h-100 text-center">
+                        <div class="team-img-container">
+                            <i class="fa-solid fa-user-graduate fa-6x text-secondary"></i>
+                        </div>
+                        <div class="card-body p-4">
+                            <h3 class="card-title fw-bold">Xavier Caballé Navarro</h3>
+                            <p class="text-primary fw-semibold">DAW</p>
+                            <div class="d-flex justify-content-center gap-3 mt-3">
+                                <a href="https://github.com/xaavic" target="_blank"
+                                    class="btn btn-outline-secondary btn-sm rounded-circle"><i
+                                        class="fa-brands fa-github"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mb-5">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h2 class="fw-bold mb-4">Sobre E-random-Comerç</h2>
+                    <p class="text-secondary">
+                        Aquest projecte neix amb la intenció de demostrar els coneixements adquirits durant el grau
+                        superior de DAW a l'IOC.
+                        Hem implementat una arquitectura MVC robusta utilitzant Spring Boot, amb funcionalitats
+                        completes de comerç electrònic.
+                    </p>
+                    <ul class="list-unstyled mt-4">
+                        <li class="mb-2"><i class="fa-solid fa-check text-success me-2"></i> Gestió d'usuaris i rols
+                        </li>
+                        <li class="mb-2"><i class="fa-solid fa-check text-success me-2"></i> Carret de la compra dinàmic
+                        </li>
+                        <li class="mb-2"><i class="fa-solid fa-check text-success me-2"></i> Gestió de productes i estoc
+                        </li>
+                        <li class="mb-2"><i class="fa-solid fa-check text-success me-2"></i> Disseny responsive i modern
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-lg-6">
+                    <div class="bg-light p-5 rounded-3 text-center border">
+                        <i class="fa-solid fa-graduation-cap fa-4x text-primary mb-3"></i>
+                        <h4>Institut Obert de Catalunya</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Peu de pàgina -->
+    <footer class="footer">
+        <div class="footer-links">
+            <div>
+                <h4>Sobre nosaltres</h4>
+                <a href="#">Blog</a>
+                <a th:href="@{/Random/equip}">Equip</a>
+            </div>
+            <div>
+                <h4>Ajuda</h4>
+                <a href="#">Contacte</a>
+                <a href="#">Enviaments</a>
+                <a href="#">Retorns</a>
+            </div>
+        </div>
+        <p class="copyright">© 2025 E-random-Comerç. Tots els drets reservats.</p>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

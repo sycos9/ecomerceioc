@@ -54,6 +54,83 @@ body {
     cursor: pointer;
 }
 
+/* ===== BANNER ===== */
+#bannerCarousel {
+    margin-top: 0;
+}
+
+/* Les imatges mantenen proporció i no es deformen */
+#bannerCarousel img {
+    height: 320px;       /* Ajustable */
+    object-fit: cover;
+}
+
+/* Controls més visibles */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    filter: invert(1);
+}
+
+@media (max-width: 768px) {
+    #bannerCarousel img {
+        height: 180px;
+    }
+}
+
+/* Textos i botons banner */
+.carousel-caption {
+  background-color: rgba(0, 0, 0, 0);  /* fons semi-transparente per llegibilitat */
+  padding: 20px;
+  border-radius: 8px;
+}
+
+/* Text a l’esquerra */
+.caption-left {
+  right: auto;
+  left: 5%;
+  text-align: center;
+}
+
+/* Text a la dreta */
+.caption-right {
+  left: auto;
+  right: 5%;
+  text-align: center;
+}
+
+/* Fer el text més llegible */
+.carousel-caption h2,
+.carousel-caption p {
+  color: white;
+}
+
+.carousel-caption .btn {
+  padding: .6rem 1.2rem;
+}
+
+/* INDICADORS PERSONALITZATS (ANUL·LEM BOOTSTRAP) */
+.custom-indicators button {
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+
+  padding: 0 !important;
+  margin: 4px !important;
+
+  background-color: transparent !important;
+  border: 1.8px solid black !important;
+  opacity: 1 !important;
+
+  box-sizing: border-box !important;
+  flex: unset !important;       /* Evita que Bootstrap els estiri */
+}
+
+/* BOLETA ACTIVA → PLENA NEGRA */
+.custom-indicators .active {
+  background-color: black !important;
+  transform: scale(1.25); /* opcional, si vols més efecte */
+}
+
 /* ===== LAYOUT PRINCIPAL ===== */
 .main-content {
     display: flex;

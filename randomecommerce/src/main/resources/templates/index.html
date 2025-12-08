@@ -20,15 +20,16 @@
     <body>
         <!-- Barra de navegació -->
         <header class="navbar">
-
-            <a th:href="@{/Random}" class="d-flex align-items-center me-4 text-decoration-none">
-                <img src="/images/logo-erandom.png" alt="eRandom Logo" style="height:50px;">
-            </a>
+            <div class="nav-logo">
+                <a th:href="@{/Random}" class="d-flex align-items-center me-4 text-decoration-none">
+                    <img src="/images/logo-erandom.png" alt="eRandom Logo" style="height:50px;">
+                </a>
+            </div>
 
             <nav class="nav-links">
                 <a th:href="@{/Random}">Inici</a>
                 <a th:if="${session.usuari != null and session.usuari.rol.nombre == 'ADMIN'}"
-                    th:href="@{/Random/productos}">
+                   th:href="@{/Random/productos}">
                     Productes
                 </a>
                 <a href="#">Blog</a>
@@ -68,6 +69,51 @@
 
             </div>
         </header>
+
+        <!<!-- BANNER -->
+        <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
+
+            <!-- BOLETES (INDICADORS) -->
+            <div class="carousel-indicators custom-indicators">
+                <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="0" class="active"></button>
+                <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="1"></button>
+                <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="2"></button>
+            </div>
+
+            <div class="carousel-inner">
+
+                <!-- SLIDE 1 -->
+                <div class="carousel-item active">
+                    <img src="/images/banner-descomptes.png" class="d-block w-100">
+                    <div class="carousel-caption caption-right">
+                        <h2>Super Ofertes!</h2>
+                        <p>Descobreix descomptes exclusius.</p>
+                        <a href="/ofertes" class="btn btn-primary">Veure ofertes</a>
+                    </div>
+                </div>
+
+                <!-- SLIDE 2 -->
+                <div class="carousel-item">
+                    <img src="/images/banner-newsletter.png" class="d-block w-100">
+                    <div class="carousel-caption caption-left">
+                        <h2>Newsletter</h2>
+                        <p>Subscriu-te i guanya cupons.</p>
+                        <a href="/newsletter" class="btn btn-light">Subscriu-te</a>
+                    </div>
+                </div>
+
+                <!-- SLIDE 3 -->
+                <div class="carousel-item">
+                    <img src="/images/banner-venedors.png" class="d-block w-100">
+                    <div class="carousel-caption caption-left">
+                        <h2>Sigues venedor!</h2>
+                        <p>Uneix-te a la plataforma.</p>
+                        <a href="/reg-vendedor" class="btn btn-primary">Comença ara</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         <!-- Contingut principal -->
         <main class="main-content">
@@ -162,22 +208,22 @@
 
                                     <!-- Botón Compra (redirige a show) -->
                                     <div class="d-grid">
-                                      <th:block th:with="stockDisponible=${producto.stock - carrito.getCantidadEnCarrito(producto.id)}">
-                                          <!-- Si HAY stock disponible -->
-                                          <a th:if="${stockDisponible > 0}"
-                                            th:href="@{/Random/productos/{id}(id=${producto.id}, categoria=${categoriaSeleccionada}, busqueda=${busqueda})}"
-                                            class="btn btn-primary w-100 mt-auto">
-                                              <i class="fa-solid fa-shopping-bag"></i> Compra
-                                          </a>
-                                          
-                                          <!-- Si NO HAY stock disponible -->
-                                          <button th:if="${stockDisponible <= 0}"
-                                                  type="button"
-                                                  class="btn btn-secondary w-100 mt-auto"
-                                                  disabled>
-                                              <i class="fa-solid fa-box-open"></i> Sense stock
-                                          </button>
-                                      </th:block>
+                                        <th:block th:with="stockDisponible=${producto.stock - carrito.getCantidadEnCarrito(producto.id)}">
+                                            <!-- Si HAY stock disponible -->
+                                            <a th:if="${stockDisponible > 0}"
+                                               th:href="@{/Random/productos/{id}(id=${producto.id}, categoria=${categoriaSeleccionada}, busqueda=${busqueda})}"
+                                               class="btn btn-primary w-100 mt-auto">
+                                                <i class="fa-solid fa-shopping-bag"></i> Compra
+                                            </a>
+
+                                            <!-- Si NO HAY stock disponible -->
+                                            <button th:if="${stockDisponible <= 0}"
+                                                    type="button"
+                                                    class="btn btn-secondary w-100 mt-auto"
+                                                    disabled>
+                                                <i class="fa-solid fa-box-open"></i> Sense stock
+                                            </button>
+                                        </th:block>
                                     </div>
                                 </div>
                             </div>
@@ -225,6 +271,7 @@
 
         <!-- Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 
     </body>
 </html>

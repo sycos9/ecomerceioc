@@ -156,7 +156,7 @@ public class ProductoController {
             productoGuardar = producto;
         }
 
-        // Manejo de imagen (como ya lo tienes)
+        // Manejo de imagen
         if (imagen != null && !imagen.isEmpty()) {
             try {
                 String nombreOriginal = imagen.getOriginalFilename();

@@ -59,13 +59,11 @@ body {
     margin-top: 0;
 }
 
-/* Les imatges mantenen proporció i no es deformen */
 #bannerCarousel img {
     height: 320px;       /* Ajustable */
     object-fit: cover;
 }
 
-/* Controls més visibles */
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
     filter: invert(1);
@@ -98,7 +96,6 @@ body {
   text-align: center;
 }
 
-/* Fer el text més llegible */
 .carousel-caption h2,
 .carousel-caption p {
   color: white;
@@ -122,13 +119,13 @@ body {
   opacity: 1 !important;
 
   box-sizing: border-box !important;
-  flex: unset !important;       /* Evita que Bootstrap els estiri */
+  flex: unset !important; 
 }
 
-/* BOLETA ACTIVA → PLENA NEGRA */
+/* BOLETA ACTIVA */
 .custom-indicators .active {
   background-color: black !important;
-  transform: scale(1.25); /* opcional, si vols més efecte */
+  transform: scale(1.25);
 }
 
 /* ===== LAYOUT PRINCIPAL ===== */
@@ -138,32 +135,64 @@ body {
     gap: 30px;
 }
 
-/* Barra lateral */
+/* ===== SIDEBAR ===== */
 .sidebar {
     width: 220px;
-    border-right: 1px solid #eee;
-    padding-right: 20px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 14px;
+    border: 1px solid #e5e5e5;
+    height: fit-content;
 }
 
+/* Títol */
 .sidebar h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
     margin-bottom: 15px;
+    color: #222;
 }
 
+/* Llista */
 .sidebar ul {
     list-style: none;
     padding: 0;
+    margin: 0;
 }
 
+/* Links */
 .sidebar a {
+    display: block;
+    padding: 10px 14px;
+    margin-bottom: 6px;
     color: #333;
     text-decoration: none;
-    display: block;
-    padding: 8px 0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.25s ease;
 }
 
+/* Hover */
 .sidebar a:hover {
-    text-decoration: underline;
+    background-color: #e9ecef;
+    color: #0d6efd;
 }
+
+/* Categoria activa */
+.sidebar a.active {
+    background-color: #111;
+    color: white;
+    font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+}
+
 
 /* ===== PRODUCTES ===== */
 .product-section {
@@ -173,71 +202,102 @@ body {
 }
 
 .section-title {
-    margin-bottom: 25px;
-    font-size: 1.5rem;
+    margin-bottom: 30px;
+    font-size: 1.6rem;
     font-weight: 600;
 }
 
-/* Contenidor de productes amb Flexbox */
+/* Contenidor */
 .product-container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
     gap: 30px;
 }
 
-  .product-card {
+/* CARD */
+.product-card {
     flex: 0 1 calc(33.333% - 20px);
-    background: #fafafa;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
     border: 1px solid #eee;
-    border-radius: 12px;
-    text-align: center;
-    padding: 20px;
-    transition: all 0.2s ease;
-  }
+    border-radius: 14px;
+    padding: 18px;
+    transition: all 0.25s ease;
+}
 
 .product-card:hover {
-    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+    transform: translateY(-6px);
 }
 
+/* Imatge */
 .product-card img {
     width: 100%;
-    border-radius: 8px;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 12px;
 }
 
+/* Títol producte */
+.product-card h5,
+.product-card h4 {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+
+/* Preu */
 .price {
     font-weight: 600;
-    margin: 10px 0;
+    font-size: 1.05rem;
+    margin: 8px 0 14px;
 }
 
+/* Botó */
 .product-card button {
+    margin-top: auto;
     background: #111;
     color: #fff;
     border: none;
-    padding: 8px 16px;
-    border-radius: 6px;
+    padding: 10px 16px;
+    border-radius: 8px;
     cursor: pointer;
+    font-weight: 500;
+    transition: background 0.25s ease;
 }
 
 .product-card button:hover {
-    background: #333;
+    background: #0b5ed7;
 }
 
-.img-thumbnail {
-    max-width: 100%;
-    height: auto;
-}
-
+/* Errors */
 .text-danger {
-    margin-bottom: 5px;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
 }
 
-@media (max-width: 576px) {
-    .product-form-card {
-        padding: 20px;
+/* ===== RESPONSIVE ===== */
+
+/* Tauleta: 2 columnes */
+@media (max-width: 992px) {
+    .product-card {
+        flex: 0 1 calc(50% - 15px);
     }
 }
+
+/* Mòbil: 1 columna */
+@media (max-width: 576px) {
+    .product-card {
+        flex: 0 1 100%;
+    }
+
+    .product-card img {
+        height: 200px;
+    }
+}
+
 
 /* ===== PAGINACIÓ ===== */
 .pagination {
@@ -260,37 +320,6 @@ body {
 .page-number.active, .page-btn:hover {
     background: #111;
     color: white;
-}
-
-/* ===== SECCIÓ INFO ===== */
-.info-section {
-    background: #111;
-    color: white;
-    text-align: center;
-    padding: 60px 20px;
-}
-
-.info-section input {
-    padding: 10px;
-    width: 250px;
-    border-radius: 6px;
-    border: none;
-    margin-right: 10px;
-}
-
-.info-section button {
-    padding: 10px 20px;
-    border: none;
-    background: #fff;
-    color: #111;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-.info-section button:hover {
-    background: #007bff;
-    color: #fff;
-    transition: 0.3s;
 }
 
 /* ===== PEU DE PÀGINA ===== */
@@ -457,5 +486,106 @@ body {
         padding: 30px 20px;
     }
 }
+
+
+/* ===== Dialog ===== */
+/* Fons fosc darrere del popup */
+#myDialog::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+/* Contenidor del dialog */
+#myDialog {
+  border: none;
+  border-radius: 16px;
+  padding: 30px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+  font-family: 'Inter', sans-serif;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Animació d’entrada */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Títol */
+#myDialog h1 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* Text */
+#myDialog p {
+  color: #555;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Formulari */
+#myDialog form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Input */
+#myDialog input[type="email"] {
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+/* Botó enviar */
+#myDialog button:not(.close-btn) {
+  background-color: #111; 
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#myDialog button:not(.close-btn):hover {
+  background-color: #0b5ed7;
+}
+
+/* Botó tancar (creu) */
+#myDialog .close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #555;
+}
+
+#myDialog .close-btn:hover {
+  color: black;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  #myDialog {
+    margin: 20px;
+    padding: 20px;
+  }
+}
+
 
 
